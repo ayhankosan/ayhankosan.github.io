@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>California Water Resources Analysis — Ayhan Kosan</title>
+  <meta name="description" content="Tracking California's Central Valley water storage with NASA GRACE satellite data.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Jost:wght@400;500;600;700&amp;display=swap">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="theme-bauhaus.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script src="site.js" defer></script>
+</head>
+<body id="top">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <nav class="container nav-bar" aria-label="Main">
+      <a class="site-logo" href="index.html"><span class="logo-first">Ayhan</span><span class="logo-last">Kosan</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-menu" aria-label="Menu">
+        <span class="nav-toggle-bars" aria-hidden="true"></span>
+      </button>
+      <ul class="nav-menu" id="primary-menu">
+        <li><a href="index.html#work">Work</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#toolkit">Toolkit</a></li>
+        <li><a href="resume.html">Resume</a></li>
+        <li class="nav-cta"><a href="index.html#contact">Get in touch</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1">
+  <article class="project-detail">
+    <div class="container">
+      <a class="back-link" href="index.html#projects">
+        <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        All projects
+      </a>
+      <h1 class="page-title">California Water Resources Analysis</h1>
+      <div class="project-info">
+        <div class="project-category">
+          <span class="meta-label">Category</span> Remote Sensing & Hydrological Analysis
+        </div>
+        <div class="project-date">
+          <span class="meta-label">Date</span> March 2025
+        </div>
+        <div class="project-app">
+          <span class="meta-label">Project App</span> <a href="https://ayhanxkosan.users.earthengine.app/view/californiareservoiranalysis" target="_blank" rel="noopener">View the App<span class="visually-hidden"> (opens in a new tab)</span></a>
+        </div>
+        <div class="project-link">
+          <span class="meta-label">Project Code</span> <a href="https://code.earthengine.google.com/51a5004ab58a3be61634ea778a2f8462" target="_blank" rel="noopener">View on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
+        </div>
+      </div>
+      
+      <div class="project-description">
+        <h2>Project Overview</h2>
+        <p>This Google Earth Engine Script tracks California's water resources using NASA's GRACE (Gravity Recovery and Climate Experiment) satellite data. Through the payload, it is possible to detect changes in Earth's gravity field caused by water movement, allowing us to "see" underground water storage changes that would otherwise be invisible. By combining this satellite data with climate measurements and watershed models, this tool helps visualize and understand California's watershed challenges.</p>
+        
+        <h2>Technical Approach</h2>
+        <p>This analysis focuses on California's Central Valley, the agricultural heartland that depends critically on water resources. Here's how the script works:</p>
+        
+        <ul>
+          <li><strong>GRACE Satellite Data:</strong> The twin satellites measure tiny variations in Earth's gravity caused by water mass changes. When groundwater depletes, the satellites detect a subtle decrease in gravitational pull, allowing us to map deviations from normal water levels, in this case water storage anomalies.</li>
+          <li><strong>Terrain Analysis:</strong> Using USGS SRTM (Shuttle Radar Topography Mission) data, the script analyzes elevation, slope and aspect to understand how water flows across landscapes and where it naturally accumulates.</li>
+          <li><strong>Climate Integration:</strong> NASA's DAYMET climate data provides daily temperature and precipitation measurements, helping us correlate weather patterns with water storage changes.</li>
+          <li><strong>Reservoir Monitoring:</strong> The script tracks major reservoirs capacity and actual water levels, helping us understand the amount of available water stored in reservoirs.</li>
+          <li><strong>Time Series Analysis:</strong> By examining data from 2003-2016, we can see long-term trends, focus on drought periods and analyze past impact of water storage management or even predict future scenarios when furthering the analysis.</li>
+          <li><strong>Climate Correlation:</strong> The algorithm identifies relationships between climate factors (like precipitation and temperature) and water storage changes, helping predict future scenarios.</li>
+        </ul>
+        
+        <div class="project-gallery">
+          <div class="gallery-item">
+            <a href="https://code.earthengine.google.com/51a5004ab58a3be61634ea778a2f8462" target="_blank" rel="noopener">
+              <img src="img/graceobservation.png" alt="Map of GRACE water storage anomalies across Central Valley watersheds, red for deficits and blue for surpluses"><span class="visually-hidden"> (opens in a new tab)</span></a>
+            <p class="caption">This visualization shows water storage anomalies across California's Central Valley watersheds. The red areas indicate significant water deficits (drier than normal), while blue areas show water surpluses. The intensity of color represents the severity of the condition. This map helps identify regions under water stress that might not be obvious from surface observations alone.
+              <a class="inline-cta" href="https://code.earthengine.google.com/51a5004ab58a3be61634ea778a2f8462" target="_blank" rel="noopener">
+                <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                View on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
+            </p>
+          </div>
+          <div class="gallery-item">
+            <img src="img/resanalysis1.png" alt="Line chart of monthly GRACE water storage anomalies, 2003 to 2016, with a declining trendline">
+            <p class="caption">Monthly water storage anomalies from GRACE satellite data (2003-2016) across the Central Valley watersheds. The blue line shows liquid water equivalent thickness (LWS) anomalies in centimeters, with the red trendline indicating the overall declining water storage.</p>
+          </div>
+          <div class="gallery-item">
+            <img src="img/resanalysis2.png" alt="Chart of average seasonal water storage by day of year, 2003 to 2016">
+            <p class="caption">The seasonal analysis chart shows day-of-year water storage patterns averaged across 2003-2016. The orange line represents how water storage typically fluctuates throughout the year in California's Central Valley. With this we can identify recharge and depletion periods within annual cycles.</p>
+          </div>
+          <div class="gallery-item">
+            <img src="img/resanalysis3.png" alt="Scatter plot of annual water storage anomalies, 2003 to 2016, with a declining trendline">
+            <p class="caption">The scatter plot shows annual water storage anomalies from 2003-2016, with each point representing the yearly average LWE thickness anomaly. The red trendline illustrates the significant multi-year decline in water storage, particularly during the 2012-2016 drought period.</p>
+          </div>
+          <div class="gallery-item">
+            <img src="img/resanalysis4.png" alt="Chart of monthly water storage deficits during the 2012 to 2016 drought">
+            <p class="caption">This analysis of the 2012-2016 drought period shows the water storage deficits (red line) across California's Central Valley. The chart displays monthly LWE thickness anomalies during this drought period helping us understand key drought intensification points and minimal recovery periods.</p>
+          </div>
+          <div class="gallery-item">
+            <img src="img/northbayrelief.png" alt="Terrain visualization of the northern Central Valley combining elevation, slope and aspect">
+            <p class="caption">Here you can see the terrain visualization of the northern part of the Central Valley which combines elevation data with slope and aspect analysis to create a comprehensive view of California's Central Valley watersheds, as a foundation for the water storage analysis. </p>
+          </div>
+          <div class="gallery-item">
+            <img src="img/gracerelief.png" alt="Relief map of the Central Valley with reservoir locations shown as blue dots">
+            <p class="caption">The blue dots showcase the location of reservoirs across the Central Valley that are used to back up this analysis.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <span data-current-year>2026</span> Ayhan Kosan</p>
+      <ul class="footer-links" aria-label="Contact">
+        <li><a href="mailto:ayhanxkosan@gmail.com">Email</a></li>
+        <li><a href="https://linkedin.com/in/ayhan-kosan">LinkedIn</a></li>
+        <li><a href="https://github.com/ayhankosan">GitHub</a></li>
+      </ul>
+      <a href="#top" class="back-to-top" aria-label="Back to top">
+        <svg aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+      </a>
+    </div>
+  </footer>

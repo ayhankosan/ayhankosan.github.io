@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Peatland Mapping in the European Alps — Ayhan Kosan</title>
+  <meta name="description" content="Mapping peatlands in the Bavarian and North Tyrolean Alps with Sentinel-1/2 data and machine learning in Google Earth Engine.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Jost:wght@400;500;600;700&amp;display=swap">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="theme-bauhaus.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script src="site.js" defer></script>
+</head>
+<body id="top">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <nav class="container nav-bar" aria-label="Main">
+      <a class="site-logo" href="index.html"><span class="logo-first">Ayhan</span><span class="logo-last">Kosan</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-menu" aria-label="Menu">
+        <span class="nav-toggle-bars" aria-hidden="true"></span>
+      </button>
+      <ul class="nav-menu" id="primary-menu">
+        <li><a href="index.html#work">Work</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#toolkit">Toolkit</a></li>
+        <li><a href="resume.html">Resume</a></li>
+        <li class="nav-cta"><a href="index.html#contact">Get in touch</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1">
+  <article class="project-detail">
+    <div class="container">
+      <a class="back-link" href="index.html#projects">
+        <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        All projects
+      </a>
+      <h1 class="page-title">Peatland Mapping & Analysis: Leveraging Google Earth Engine for Alpine Ecosystem Conservation</h1>
+      <div class="project-info">
+        <div class="project-category">
+          <span class="meta-label">Category</span> Geospatial Analysis, Remote Sensing, Machine Learning
+        </div>
+        <div class="project-date">
+          <span class="meta-label">Date</span> 2022
+        </div>
+        <div class="project-link">
+          <span class="meta-label">Project App</span> <a href="https://ayhanxkosan.users.earthengine.app/view/peatlandmapping" target="_blank" rel="noopener">View on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
+        </div>
+        <div class="project-code">
+          <span class="meta-label">Project Code</span> <a href="https://code.earthengine.google.com/76b8922858c87c0a61cb58ae185c0721" target="_blank" rel="noopener">View the Code on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
+        </div>
+      </div>
+
+      <div class="project-description">
+        <h2>Project Overview</h2>
+        <p>This project developed and evaluated a novel Google Earth Engine (GEE) approach for mapping peatlands using Sentinel-1 (S1) and Sentinel-2 (S2) satellite data in the Bavarian and North Tyrolean Alps. Covering 965 km² and utilizing machine learning algorithms (Random Forest and Support Vector Machine), I achieved up to 89% classification accuracy in identifying peatland extent. The research specifically examined the effectiveness of different satellite data combinations, compared machine learning algorithm performance, determined optimal seasonal observation periods and explored GEE's capabilities for peatland mapping. The resulting methodology and GEE-Java scripts provide a foundation for future peatland mapping and monitoring efforts, particularly in mountainous regions with extensive forest and grassland coverage.</p>
+
+        <h2>Technical Approach</h2>
+        <p>My approach combined multiple satellite data sources and advanced processing techniques:</p>
+
+        <ul>
+          <li><strong>Sentinel-1 (SAR) Processing:</strong> Applied the Refined Lee speckle filter to reduce noise while preserving edges and texture. Implemented orbit filtering, radiometric calibration and orthorectification. Generated VV and VH polarization bands and their ratios. Used border noise removal and thermal noise removal to eliminate sub-swath discontinuities.</li>
+          <li><strong>Sentinel-2 (Optical) Processing:</strong> Applied QA60 band-based cloud masking and pansharpening of red-edge and 20m bands. Calculated vegetation indices (NDVI, PSRI, ARI, MNDWI, NDWI, EVI), performed principal component analysis and tasseled cap transformation. Used spectral indices to assess vegetation health, water content and senescence patterns.</li>
+          <li><strong>Multi-temporal Compositing:</strong> Created seasonal composites using median, min, max and mean reducers across three key periods: spring-to-summer (April 15-August 31), fall (September 1-November 15), and spring-to-fall (April 15-November 15). Combined SAR, optical bands and derived indices into an integrated feature stack.</li>
+          <li><strong>Machine Learning:</strong> Trained Random Forest and SVM classifiers using carefully selected training samples. Optimized parameters through cross-validation. Used binary classification approach to separate peatland from other land cover types.</li>
+          <li><strong>Validation:</strong> Assessed accuracy using independent validation samples, confusion matrices, kappa coefficients and producer's/user's accuracies. Analyzed variable importance through RF and SVM feature rankings. Conducted visual interpretation against reference datasets to verify classification results.</li>
+        </ul>
+        <div class="project-gallery">
+          <div class="gallery-item">
+            <img src="img/peatland.png" alt="Peatland classification results produced with Random Forest and SVM in Google Earth Engine">
+            <p class="caption">ML-powered peatland identification pipeline <span class="highlight">| Random Forest & SVM</span>
+              <a class="inline-cta" href="https://code.earthengine.google.com/86dc6d916cf9807ef48948b99d36c52c" target="_blank" rel="noopener">
+                <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                View Peatland Mapping Code<span class="visually-hidden"> (opens in a new tab)</span></a>
+            </p>
+          </div>
+
+          <div class="gallery-item">
+            <img src="img/observationtool.png" alt="Screenshot of the custom Earth Engine tool for monitoring peatland health over time">
+            <p class="caption">Custom monitoring tool for tracking peatland health over time
+              <a class="inline-cta" href="https://code.earthengine.google.com/7afc3fee931365602477792016fd2133" target="_blank" rel="noopener">
+                <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                View Peatland Monitoring Code<span class="visually-hidden"> (opens in a new tab)</span></a>
+            </p>
+          </div>
+        </div>
+        <h2>Results & Impact</h2>
+        <p>The project yielded significant results in peatland mapping and monitoring:</p>
+
+        <ul>
+          <li>Achieved 89% classification accuracy through the systematic integration of Sentinel-1 and Sentinel-2 satellite data</li>
+          <li>Developed an automated monitoring system with 97% accuracy in peatland identification through quantitative vegetation index analysis</li>
+          <li>Generated an updated peatland extent map covering 965 km² of the Area of Interest</li>
+          <li>Determined statistically optimal monitoring periods, with fall months (September-November) exhibiting maximum detection efficacy</li>
+        </ul>
+        <p>This methodological approach provides conservation managers with empirically validated, scalable solutions for monitoring these vital carbon sequestration ecosystems throughout alpine regions.</p>
+
+        <h2>Conclusion</h2>
+        <p>This project successfully demonstrated a novel approach for large-scale peatland mapping in the European Alps using open-source resources and cloud computing. The developed methodology achieved exceptional results, with up to 89% accuracy using Random Forest and 80% using SVM classifiers to map peatlands at 10m resolution across 965 km². By leveraging Google Earth Engine's cloud platform and combining Sentinel-1 and Sentinel-2 data with advanced machine learning techniques, I created an efficient and scalable framework for peatland monitoring and conservation. The resulting classification scripts and tools enable rapid updating of peatland inventories and ecosystem health tracking. This work provides conservation managers with precise and automated tools for protecting these vital carbon sinks, with direct applications for environmental policy and climate action. The methodology and custom GEE scripts developed are openly available and adaptable for peatland mapping efforts in other alpine regions globally.</p>
+      </div>
+
+    </div>
+  </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <span data-current-year>2026</span> Ayhan Kosan</p>
+      <ul class="footer-links" aria-label="Contact">
+        <li><a href="mailto:ayhanxkosan@gmail.com">Email</a></li>
+        <li><a href="https://linkedin.com/in/ayhan-kosan">LinkedIn</a></li>
+        <li><a href="https://github.com/ayhankosan">GitHub</a></li>
+      </ul>
+      <a href="#top" class="back-to-top" aria-label="Back to top">
+        <svg aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+      </a>
+    </div>
+  </footer>
+</body>
+</html>

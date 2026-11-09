@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flood Mapping with Sentinel-1 SAR — Ayhan Kosan</title>
+  <meta name="description" content="Mapping the 2019 Yazoo Backwater flood in Mississippi with Sentinel-1 radar data.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Jost:wght@400;500;600;700&amp;display=swap">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="theme-bauhaus.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script src="site.js" defer></script>
+</head>
+<body id="top">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <nav class="container nav-bar" aria-label="Main">
+      <a class="site-logo" href="index.html"><span class="logo-first">Ayhan</span><span class="logo-last">Kosan</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-menu" aria-label="Menu">
+        <span class="nav-toggle-bars" aria-hidden="true"></span>
+      </button>
+      <ul class="nav-menu" id="primary-menu">
+        <li><a href="index.html#work">Work</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#toolkit">Toolkit</a></li>
+        <li><a href="resume.html">Resume</a></li>
+        <li class="nav-cta"><a href="index.html#contact">Get in touch</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1">
+  <article class="project-detail">
+    <div class="container">
+      <a class="back-link" href="index.html#projects">
+        <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        All projects
+      </a>
+      <h1 class="page-title">Flood Mapping with Sentinel-1 SAR Data</h1>
+      <div class="project-info">
+        <div class="project-category">
+          <span class="meta-label">Category</span> Remote Sensing, Disaster Management, Environmental Monitoring, Geospatial Analysis
+        </div>
+        <div class="project-date">
+          <span class="meta-label">Date</span> April 2025
+        </div>
+        <div class="project-link">
+          <span class="meta-label">Project Link</span> <a href="https://code.earthengine.google.com/ef58080724ee8a9aa978420491a1db90" target="_blank" rel="noopener">View on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
+        </div>
+      <div class="project-app">
+        <span class="meta-label">Project App</span> <a href="https://ayhanxkosan.users.earthengine.app/view/sarfloodmapping" target="_blank" rel="noopener">View Code on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
+      </div>
+      </div>
+      
+      <div class="project-description">
+        <h2>Project Overview</h2>
+        <p>This project maps and analyzes the 2019 Mississippi River flood events in the Vicksburg region using Sentinel-1 Synthetic Aperture Radar (SAR) data. It focuses on the Yazoo Backwater Flood, a federally declared disaster that left over 550,000 acres underwater across Warren, Issaquena, Sharkey and Humphreys counties for more than six months. The flood caused widespread damage to homes, farmland, infrastructure and ecosystems. The Yazoo Backwater Area, about 1,550 square miles in Mississippi's South Delta, is bordered by the Mississippi and Yazoo River levees. When high water forces the drainage structures to close, rainfall collects with no way out. In 2019, flood levels reached 98.2 feet, the highest since the levees were completed in 1978. The scale of the disaster was made worse by the absence of a pump station, an unbuilt but long-authorized part of the Yazoo Backwater Project that was vetoed by the EPA in 2008.</p>
+        <h2>Technical Approach</h2>
+        
+        <ul>
+            <li><strong>Data acquisition</strong> - Collected Sentinel-1 SAR data for the Vicksburg region with a 50km buffer, using both ascending and descending satellite passes for full coverage.</li>
+            <li><strong>Speckle filtering</strong> - Applied a refined Lee filter to reduce noise and preserve flood boundaries, resulting in cleaner imagery for analysis.</li>
+            <li><strong>Water detection</strong> - Used a multi-threshold algorithm to analyze backscatter values and separate water from non-water surfaces.</li>
+            <li><strong>Flood delineation</strong> - Compared detected water against the JRC Global Surface Water dataset to identify new flood zones apart from permanent water bodies, producing a final flood detection layer.</li>
+            <li><strong>Topographic refinement</strong> - Integrated elevation, slope and flow accumulation data to eliminate false positives and improve accuracy in low-lying areas.</li>
+            <li><strong>Severity analysis</strong> - Built a flood severity index by combining estimated depth, historical flood frequency and flow accumulation patterns.</li>
+        </ul>
+        
+        <h2>Visualization Outputs</h2>
+        
+        <ul>
+            <li><strong>Raw SAR imagery</strong> - Base data visualization showing radar backscatter</li>
+            <li><strong>Detected water surfaces</strong> - All water bodies identified in the analysis</li>
+            <li><strong>Permanent water bodies</strong> - Historical water features from JRC dataset</li>
+            <li><strong>Flood-specific zones</strong> - Areas newly inundated during the flood event</li>
+            <li><strong>Flood frequency patterns</strong> - Visualization of areas prone to repeated flooding</li>
+            <li><strong>Severity index</strong> - Combined risk assessment based on multiple factors</li>
+        </ul>
+        
+
+
+        <div class="project-link-cta">
+          <a class="btn btn-primary" href="https://code.earthengine.google.com/ef58080724ee8a9aa978420491a1db90" target="_blank" rel="noopener">
+            <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            View on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
+        </div>
+        <div class="project-gallery">
+          <div class="gallery-item">
+            <img src="img/floodareas.png" alt="Map of detected 2019 flood areas in red and permanent water bodies in blue around Vicksburg">
+            <p class="caption">This image shows the final flood detection layer I created by comparing detected water with historical water data from the JRC Global Surface Water dataset. The red areas represent flood waters that are not part of permanent water bodies (shown in blue). I used topographic data and distance-based probability weighting to refine my detection, eliminating false positives in higher elevation areas while focusing on areas within 7000m of permanent water bodies.</p>
+          </div>
+          <div class="gallery-item">
+            <img src="img/floodfrequency.png" alt="Map of historical flood frequency, with frequently flooded areas in purple">
+            <p class="caption">In this visualization, I've displayed flood frequency data derived from the JRC Global Surface Water dataset, showing areas that flood more frequently in purple shades. The information helps me identify areas prone to repeated flooding, which is useful for long-term planning.</p>
+          </div>
+          <div class="gallery-item">
+            <img src="img/floodseverity.png" alt="Map of the flood severity index combining depth, frequency and flow accumulation">
+            <p class="caption">This shows the enhanced flood severity index, which combines three key factors I weighted: estimated flood depth (60% weight), historical flood frequency (20% weight) and flow accumulation (20% weight). </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+  </main>
+
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <span data-current-year>2026</span> Ayhan Kosan</p>
+      <ul class="footer-links" aria-label="Contact">
+        <li><a href="mailto:ayhanxkosan@gmail.com">Email</a></li>
+        <li><a href="https://linkedin.com/in/ayhan-kosan">LinkedIn</a></li>
+        <li><a href="https://github.com/ayhankosan">GitHub</a></li>
+      </ul>
+      <a href="#top" class="back-to-top" aria-label="Back to top">
+        <svg aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+      </a>
+    </div>
+  </footer>
+</body>
+</html>

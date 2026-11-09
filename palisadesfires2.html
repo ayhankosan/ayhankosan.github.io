@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Palisades Fire Burn Severity Analysis — Ayhan Kosan</title>
+  <meta name="description" content="Burn severity analysis of the 2025 Palisades Fire using Sentinel-1 and Sentinel-2 imagery.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Jost:wght@400;500;600;700&amp;display=swap">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="theme-bauhaus.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script src="site.js" defer></script>
+</head>
+<body id="top">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <nav class="container nav-bar" aria-label="Main">
+      <a class="site-logo" href="index.html"><span class="logo-first">Ayhan</span><span class="logo-last">Kosan</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-menu" aria-label="Menu">
+        <span class="nav-toggle-bars" aria-hidden="true"></span>
+      </button>
+      <ul class="nav-menu" id="primary-menu">
+        <li><a href="index.html#work">Work</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#toolkit">Toolkit</a></li>
+        <li><a href="resume.html">Resume</a></li>
+        <li class="nav-cta"><a href="index.html#contact">Get in touch</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1">
+  <article class="project-detail">
+    <div class="container">
+      <a class="back-link" href="index.html#projects">
+        <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        All projects
+      </a>
+      <h1 class="page-title">Palisades Fire Burn Severity Analysis</h1>
+      <div class="project-info">
+        <div class="project-category">
+          <span class="meta-label">Category</span> Remote Sensing & GIS Analysis
+        </div>
+        <div class="project-date">
+          <span class="meta-label">Date</span> March 2025
+        </div>
+        <div class="project-link">
+          <span class="meta-label">Project App</span> <a href="https://ayhanxkosan.users.earthengine.app/view/palisadesfire2025" target="_blank" rel="noopener">View on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
+        </div>
+        <div class="project-code">
+          <span class="meta-label">Project Code</span> <a href="https://code.earthengine.google.com/e45a47c4380b575d07c71e99f057d6eb" target="_blank" rel="noopener">View the Code on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
+        </div>
+      </div>
+        
+        <div class="project-description">
+          <h2>Project Overview</h2>
+          <p>This script performs a comprehensive burn severity analysis of the Palisades Fire in Los Angeles, 2025, using satellite imagery from Sentinel-2 and Sentinel-1. The script processes optical and radar data to assess burn severity, vegetation recovery and soil moisture changes in the affected area.</p>
+          
+          <h2>Technical Approach</h2>
+          <p>The analysis uses multi-temporal satellite data from before and after the fire event. Sentinel-2 optical imagery provides spectral information for calculating vegetation indices, while Sentinel-1 SAR data enables analysis through smoke and clouds.</p>
+          
+          <ul>
+            <li>Time periods: Pre-fire (2024-12-01 to 2025-01-06) and post-fire (2025-02-01 to 2025-02-15)</li>
+            <li>Cloud masking applied to Sentinel-2 data using the Scene Classification Layer (SCL)</li>
+            <li>Calculation of vegetation indices: NBR (Normalized Burn Ratio), NDVI (Normalized Difference Vegetation Index) and EVI (Enhanced Vegetation Index)</li>
+            <li>Sentinel-1 SAR data processing including speckle filtering and dB scale conversion</li>
+            <li>Soil moisture estimation from SAR data using VV/VH polarization</li>
+            <li>Burn severity classification based on USGS thresholds for dNBR values</li>
+            <li>Statistical analysis of burn severity, vegetation recovery and soil moisture changes</li>
+          </ul>
+          <div class="project-gallery">
+            <div class="gallery-item">
+              <a href="https://ayhanxkosan.users.earthengine.app/view/palisadesfire2025" target="_blank" rel="noopener">
+                <img src="img/palisadesfire.png" alt="Burn severity classification map of the 2025 Palisades Fire area"><span class="visually-hidden"> (opens in a new tab)</span></a>
+              <p class="caption">Burn severity classification map of the Palisades Fire showing the spatial distribution of different severity classes across the affected area.
+                <a class="inline-cta" href="https://ayhanxkosan.users.earthengine.app/view/palisadesfire2025" target="_blank" rel="noopener">
+                  <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                  View on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
+              </p>
+            </div>
+          </div>
+          <h2>Key Findings & Applications</h2>
+          <p>This analysis provides insights into the Palisades Fire's impact through multi-sensor satellite data integration:</p>
+          
+          <ul>
+            <li>Precise burn severity classification across four categories (Unburned/Low to High severity) with quantitative area measurements</li>
+            <li>Comprehensive vegetation recovery tracking through multi-temporal NDVI/EVI analysis</li>
+            <li>Advanced soil moisture dynamics assessment revealing post-fire hydrological changes</li>
+            <li>Interactive visualization dashboard with statistical summaries and exportable georeferenced outputs</li>
+          </ul>
+          <p>The framework demonstrates how integrating optical and radar satellite data enables robust wildfire analysis even through smoke and clouds. This methodology provides emergency managers and ecologists with actionable intelligence for post-fire recovery planning and can be readily adapted to monitor other wildfire events by adjusting temporal and spatial parameters.</p>
+        </div>
+    </div>
+  </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <span data-current-year>2026</span> Ayhan Kosan</p>
+      <ul class="footer-links" aria-label="Contact">
+        <li><a href="mailto:ayhanxkosan@gmail.com">Email</a></li>
+        <li><a href="https://linkedin.com/in/ayhan-kosan">LinkedIn</a></li>
+        <li><a href="https://github.com/ayhankosan">GitHub</a></li>
+      </ul>
+      <a href="#top" class="back-to-top" aria-label="Back to top">
+        <svg aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+      </a>
+    </div>
+  </footer>
+</body>
+</html>
