@@ -12,6 +12,14 @@
   <link rel="stylesheet" href="theme-bauhaus.css">
   <script>document.documentElement.classList.add('js');</script>
   <script src="site.js" defer></script>
+  <style>
+    .ee-embed { position: relative; margin: 1rem 0 0.5rem; border: 2px solid var(--black, #111); background: #f4f3ef; aspect-ratio: 8 / 5; }
+    .ee-embed img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .ee-embed iframe { display: block; width: 100%; height: 100%; border: 0; }
+    .ee-embed-load { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 0 4px rgba(255,255,255,0.85); }
+    .ee-embed-alt { font-size: 0.9rem; }
+    @media (max-width: 640px) { .ee-embed { aspect-ratio: 3 / 4; } }
+  </style>
 </head>
 <body id="top">
   <a class="skip-link" href="#main">Skip to main content</a>
@@ -46,61 +54,58 @@
           <span class="meta-label">Category</span> Remote Sensing, Disaster Management, Environmental Monitoring, Geospatial Analysis
         </div>
         <div class="project-date">
-          <span class="meta-label">Date</span> April 2025
+          <span class="meta-label">Date</span> April 2025, method updated November 2026
         </div>
         <div class="project-link">
-          <span class="meta-label">Project Link</span> <a href="https://code.earthengine.google.com/ef58080724ee8a9aa978420491a1db90" target="_blank" rel="noopener">View on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
+          <span class="meta-label">Interactive map</span> <a href="https://ayhanxkosan.users.earthengine.app/view/vicksburg-flood-mapping-2019" target="_blank" rel="noopener">Open the Earth Engine app<span class="visually-hidden"> (opens in a new tab)</span></a>
         </div>
       <div class="project-app">
-        <span class="meta-label">Project App</span> <a href="https://ayhanxkosan.users.earthengine.app/view/sarfloodmapping" target="_blank" rel="noopener">View Code on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
+        <span class="meta-label">Code</span> <a href="https://code.earthengine.google.com/ef58080724ee8a9aa978420491a1db90" target="_blank" rel="noopener">View the code in the Earth Engine Code Editor<span class="visually-hidden"> (opens in a new tab)</span></a>
       </div>
       </div>
       
       <div class="project-description">
         <h2>Project Overview</h2>
         <p>This project maps and analyzes the 2019 Mississippi River flood events in the Vicksburg region using Sentinel-1 Synthetic Aperture Radar (SAR) data. It focuses on the Yazoo Backwater Flood, a federally declared disaster that left over 550,000 acres underwater across Warren, Issaquena, Sharkey and Humphreys counties for more than six months. The flood caused widespread damage to homes, farmland, infrastructure and ecosystems. The Yazoo Backwater Area, about 1,550 square miles in Mississippi's South Delta, is bordered by the Mississippi and Yazoo River levees. When high water forces the drainage structures to close, rainfall collects with no way out. In 2019, flood levels reached 98.2 feet, the highest since the levees were completed in 1978. The scale of the disaster was made worse by the absence of a pump station, an unbuilt but long-authorized part of the Yazoo Backwater Project that was vetoed by the EPA in 2008.</p>
-        <h2>Technical Approach</h2>
-        
-        <ul>
-            <li><strong>Data acquisition</strong> - Collected Sentinel-1 SAR data for the Vicksburg region with a 50km buffer, using both ascending and descending satellite passes for full coverage.</li>
-            <li><strong>Speckle filtering</strong> - Applied a refined Lee filter to reduce noise and preserve flood boundaries, resulting in cleaner imagery for analysis.</li>
-            <li><strong>Water detection</strong> - Used a multi-threshold algorithm to analyze backscatter values and separate water from non-water surfaces.</li>
-            <li><strong>Flood delineation</strong> - Compared detected water against the JRC Global Surface Water dataset to identify new flood zones apart from permanent water bodies, producing a final flood detection layer.</li>
-            <li><strong>Topographic refinement</strong> - Integrated elevation, slope and flow accumulation data to eliminate false positives and improve accuracy in low-lying areas.</li>
-            <li><strong>Severity analysis</strong> - Built a flood severity index by combining estimated depth, historical flood frequency and flow accumulation patterns.</li>
-        </ul>
-        
-        <h2>Visualization Outputs</h2>
-        
-        <ul>
-            <li><strong>Raw SAR imagery</strong> - Base data visualization showing radar backscatter</li>
-            <li><strong>Detected water surfaces</strong> - All water bodies identified in the analysis</li>
-            <li><strong>Permanent water bodies</strong> - Historical water features from JRC dataset</li>
-            <li><strong>Flood-specific zones</strong> - Areas newly inundated during the flood event</li>
-            <li><strong>Flood frequency patterns</strong> - Visualization of areas prone to repeated flooding</li>
-            <li><strong>Severity index</strong> - Combined risk assessment based on multiple factors</li>
-        </ul>
-        
+        <h2>Interactive map</h2>
+        <p>Drag the divider to compare the dry-season reference (left) with the flood window (right). The layer list on the right map switches between flood extent, depth, persistence and hazard classes. The app computes every layer live from Sentinel-1, so the flood layers take two to three minutes to appear.</p>
+        <div class="ee-embed" id="ee-embed">
+          <img src="img/flood-app-preview.jpg" width="800" height="500" alt="Split map of the Vicksburg area: dry-season radar backscatter on the left, and on the right the spring 2019 flood shaded by hazard class across the Yazoo backwater fields, with the Mississippi River in dark blue.">
+          <button type="button" class="btn btn-primary ee-embed-load" id="ee-embed-load">Load interactive map</button>
+        </div>
+        <p class="ee-embed-alt"><a href="https://ayhanxkosan.users.earthengine.app/view/vicksburg-flood-mapping-2019" target="_blank" rel="noopener">Open the map full screen<span class="visually-hidden"> (opens in a new tab)</span></a></p>
 
+        <h2>Technical Approach</h2>
+        <ul>
+            <li><strong>Data</strong> - Sentinel-1 radar backscatter (VV and VH) for the flood window, 1 March to 15 April 2019, and for a dry, low-water reference period, August to October 2018. Every 2019 image is paired with reference images from the same orbit, so the viewing geometry stays constant.</li>
+            <li><strong>Speckle filtering</strong> - A Lee filter applied to linear radar power before conversion to decibels, using the sensor's noise level.</li>
+            <li><strong>Change detection</strong> - For every pixel, the drop in backscatter is measured against that pixel's dry-season mean and variability (a Z-score), following DeVries et al. (2020).</li>
+            <li><strong>Open-water threshold</strong> - Otsu's method, applied only to pixels near land/water edges so the histogram has two clear classes, with a statistical check (Ashman's D) that the classes are well separated.</li>
+            <li><strong>Flood delineation</strong> - A pixel counts as flooded when it is dark enough to be open water and clearly darker than in the dry season. Normal water (JRC Global Surface Water plus dry-season radar water) is excluded, as are pixels high above the nearest drainage (HAND) or on steep slopes, and patches smaller than 0.4 ha.</li>
+            <li><strong>Persistence</strong> - Each Sentinel-1 pass in the window is classified separately; persistence is the share of passes on which a pixel was flooded.</li>
+            <li><strong>Depth</strong> - Water-surface elevation is taken from the USGS 3DEP lidar elevation along the flood edge and spread inward, following the FwDET method; depth is the water surface minus the ground.</li>
+            <li><strong>Hazard</strong> - Depth (under 0.5 m, 0.5–1.5 m, over 1.5 m) combined with persistence into a 3 × 3 bivariate class map.</li>
+            <li><strong>Checks</strong> - Agreement with a Sentinel-2 optical water map, reported as area-weighted accuracy, and the change in flooded area when the water threshold moves by ±1 dB.</li>
+        </ul>
+
+        <h2>Outputs</h2>
+        <ul>
+            <li><strong>Before/after radar view</strong> - Dry-season and flood-window backscatter side by side, plus a change composite where new water shows red</li>
+            <li><strong>Flood extent</strong> - Open floodwater outside normal water</li>
+            <li><strong>Flood depth</strong> - Estimated depth in metres over a hillshade</li>
+            <li><strong>Flood persistence</strong> - How consistently each area stayed flooded through the window</li>
+            <li><strong>Hazard classes</strong> - Depth × persistence</li>
+            <li><strong>Flooded vegetation candidates</strong> - An experimental layer for water standing under trees</li>
+            <li><strong>Exports</strong> - Cloud-Optimized GeoTIFFs and flood polygons in an equal-area projection, with summary statistics</li>
+        </ul>
+
+        <h2>Limitations</h2>
+        <p>Radar sees open water as dark, but water standing under trees appears bright, so the open-water extent undercounts flooding in the backwater's bottomland forests; the flooded-vegetation layer is only an indicator and is not counted in the totals. The study area is a 50 km circle around Vicksburg, which leaves out the northern part of the backwater near Rolling Fork. Depth estimates assume a level water surface between flood edges and should be compared with USGS stage readings.</p>
 
         <div class="project-link-cta">
-          <a class="btn btn-primary" href="https://code.earthengine.google.com/ef58080724ee8a9aa978420491a1db90" target="_blank" rel="noopener">
+          <a class="btn btn-primary" href="https://ayhanxkosan.users.earthengine.app/view/vicksburg-flood-mapping-2019" target="_blank" rel="noopener">
             <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-            View on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
-        </div>
-        <div class="project-gallery">
-          <div class="gallery-item">
-            <img src="img/floodareas.png" alt="Map of detected 2019 flood areas in red and permanent water bodies in blue around Vicksburg">
-            <p class="caption">This image shows the final flood detection layer I created by comparing detected water with historical water data from the JRC Global Surface Water dataset. The red areas represent flood waters that are not part of permanent water bodies (shown in blue). I used topographic data and distance-based probability weighting to refine my detection, eliminating false positives in higher elevation areas while focusing on areas within 7000m of permanent water bodies.</p>
-          </div>
-          <div class="gallery-item">
-            <img src="img/floodfrequency.png" alt="Map of historical flood frequency, with frequently flooded areas in purple">
-            <p class="caption">In this visualization, I've displayed flood frequency data derived from the JRC Global Surface Water dataset, showing areas that flood more frequently in purple shades. The information helps me identify areas prone to repeated flooding, which is useful for long-term planning.</p>
-          </div>
-          <div class="gallery-item">
-            <img src="img/floodseverity.png" alt="Map of the flood severity index combining depth, frequency and flow accumulation">
-            <p class="caption">This shows the enhanced flood severity index, which combines three key factors I weighted: estimated flood depth (60% weight), historical flood frequency (20% weight) and flow accumulation (20% weight). </p>
-          </div>
+            Open the interactive map<span class="visually-hidden"> (opens in a new tab)</span></a>
         </div>
       </div>
     </div>
@@ -121,5 +126,17 @@
       </a>
     </div>
   </footer>
+  <script>
+    // Loads the Earth Engine app only on request, so visitors who do not open the map trigger no computation.
+    document.getElementById('ee-embed-load').addEventListener('click', function () {
+      var frame = document.createElement('iframe');
+      frame.src = 'https://ayhanxkosan.users.earthengine.app/view/vicksburg-flood-mapping-2019';
+      frame.title = 'Interactive map of the 2019 Yazoo Backwater flood (Google Earth Engine app)';
+      frame.setAttribute('allow', 'fullscreen');
+      var box = document.getElementById('ee-embed');
+      box.replaceChildren(frame);
+      frame.focus();
+    });
+  </script>
 </body>
 </html>
