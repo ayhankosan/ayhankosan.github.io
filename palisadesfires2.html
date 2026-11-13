@@ -46,53 +46,74 @@
           <span class="meta-label">Category</span> Remote Sensing & GIS Analysis
         </div>
         <div class="project-date">
-          <span class="meta-label">Date</span> March 2025
+          <span class="meta-label">Date</span> March 2025 · updated November 2026
         </div>
         <div class="project-link">
           <span class="meta-label">Project App</span> <a href="https://ayhanxkosan.users.earthengine.app/view/palisadesfire2025" target="_blank" rel="noopener">View on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
         </div>
         <div class="project-code">
-          <span class="meta-label">Project Code</span> <a href="https://code.earthengine.google.com/e45a47c4380b575d07c71e99f057d6eb" target="_blank" rel="noopener">View the Code on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
+          <span class="meta-label">Project Code</span> <a href="https://github.com/ayhankosan/ayhankosan.github.io/blob/main/code/palisades_burn_severity.js" target="_blank" rel="noopener">View the code on GitHub<span class="visually-hidden"> (opens in a new tab)</span></a>
         </div>
       </div>
         
         <div class="project-description">
           <h2>Project Overview</h2>
-          <p>This script performs a comprehensive burn severity analysis of the Palisades Fire in Los Angeles, 2025, using satellite imagery from Sentinel-2 and Sentinel-1. The script processes optical and radar data to assess burn severity, vegetation recovery and soil moisture changes in the affected area.</p>
-          
-          <h2>Technical Approach</h2>
-          <p>The analysis uses multi-temporal satellite data from before and after the fire event. Sentinel-2 optical imagery provides spectral information for calculating vegetation indices, while Sentinel-1 SAR data enables analysis through smoke and clouds.</p>
-          
+          <p>The Palisades Fire started on January 7, 2025 in the Santa Monica Mountains and burned into Pacific Palisades and Malibu before it was contained on January 31. This project maps burn severity across the fire with Sentinel-2 optical imagery and adds Sentinel-1 radar change as a second, cloud-independent signal. The results are published in an interactive Google Earth Engine app.</p>
+
+          <h2>Data</h2>
           <ul>
-            <li>Time periods: Pre-fire (2024-12-01 to 2025-01-06) and post-fire (2025-02-01 to 2025-02-15)</li>
-            <li>Cloud masking applied to Sentinel-2 data using the Scene Classification Layer (SCL)</li>
-            <li>Calculation of vegetation indices: NBR (Normalized Burn Ratio), NDVI (Normalized Difference Vegetation Index) and EVI (Enhanced Vegetation Index)</li>
-            <li>Sentinel-1 SAR data processing including speckle filtering and dB scale conversion</li>
-            <li>Soil moisture estimation from SAR data using VV/VH polarization</li>
-            <li>Burn severity classification based on USGS thresholds for dNBR values</li>
-            <li>Statistical analysis of burn severity, vegetation recovery and soil moisture changes</li>
+            <li><strong>Sentinel-2 Surface Reflectance (harmonized)</strong>: before (December 1, 2024 to January 6, 2025) and after (February 1 to February 12, 2025) median composites</li>
+            <li><strong>Cloud Score+</strong> for Sentinel-2, combined with the Scene Classification Layer to remove cloud, shadow, snow and water</li>
+            <li><strong>Sentinel-1 GRD</strong> (VV and VH), restricted to one orbit direction and one relative orbit so the before and after scenes share the same viewing geometry</li>
+            <li><strong>JRC Global Surface Water</strong> for permanent water and <strong>USGS 3DEP 10 m</strong> elevation for the terrain hillshade</li>
+            <li>Optional: the official fire perimeter, used for the statistics and for an unburned reference ring around the fire</li>
           </ul>
+
+          <h2>Method</h2>
+          <ul>
+            <li><strong>dNBR</strong>: the Normalized Burn Ratio before minus after, scaled by 1,000 and offset-corrected with the median dNBR of an unburned ring 0.5–2.5 km outside the perimeter (Key &amp; Benson, 2006). The offset removes seasonal and illumination differences between the two composites.</li>
+            <li><strong>Severity classes</strong>: seven classes from enhanced regrowth to high severity, using the Key &amp; Benson / USGS dNBR thresholds</li>
+            <li><strong>Relativized Burn Ratio (RBR)</strong>: dNBR relative to pre-fire NBR (Parks et al., 2014), which compares better across the fire's mix of chaparral, grassland and developed land</li>
+            <li><strong>Vegetation loss</strong>: NDVI and EVI before minus after</li>
+            <li><strong>Radar change</strong>: speckle filtering and averaging in linear power, then VV and VH backscatter change in dB and change in the radar vegetation index (RVI)</li>
+            <li>The after window ends February 12, before the February 13–14 storm that brought mudslides to the burn area. Wet soil would otherwise be read as change in the radar data.</li>
+          </ul>
+
+          <h2>Interactive App</h2>
+          <ul>
+            <li>Analysis map with a layer switcher: severity classes, dNBR, RBR, NDVI and EVI loss, radar VH change, radar vegetation index change and a SWIR false-color image</li>
+            <li>Before/after swipe comparison in true color or SWIR false color</li>
+            <li>Opacity control, an option to hide unburned pixels, and a terrain hillshade on a muted basemap</li>
+            <li>Color-blind-safe palettes, with diverging scales centered on zero</li>
+            <li>Headline areas (burned, moderate to high, high severity), an area-by-class chart and a click inspector that reads every layer at a point</li>
+            <li>Exports of all rasters, moderate-to-high severity polygons and the class area table</li>
+          </ul>
+
           <div class="project-gallery">
             <div class="gallery-item">
               <a href="https://ayhanxkosan.users.earthengine.app/view/palisadesfire2025" target="_blank" rel="noopener">
-                <img src="img/palisadesfire.png" alt="Burn severity classification map of the 2025 Palisades Fire area"><span class="visually-hidden"> (opens in a new tab)</span></a>
-              <p class="caption">Burn severity classification map of the Palisades Fire showing the spatial distribution of different severity classes across the affected area.
+                <img src="img/palisadesfire.png" alt="Burn severity map of the 2025 Palisades Fire in the Earth Engine app"><span class="visually-hidden"> (opens in a new tab)</span></a>
+              <p class="caption">Burn severity map of the Palisades Fire in the Earth Engine app.
                 <a class="inline-cta" href="https://ayhanxkosan.users.earthengine.app/view/palisadesfire2025" target="_blank" rel="noopener">
                   <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                   View on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
               </p>
             </div>
           </div>
-          <h2>Key Findings & Applications</h2>
-          <p>This analysis provides insights into the Palisades Fire's impact through multi-sensor satellite data integration:</p>
-          
+          <h2>Limitations</h2>
           <ul>
-            <li>Precise burn severity classification across four categories (Unburned/Low to High severity) with quantitative area measurements</li>
-            <li>Comprehensive vegetation recovery tracking through multi-temporal NDVI/EVI analysis</li>
-            <li>Advanced soil moisture dynamics assessment revealing post-fire hydrological changes</li>
-            <li>Interactive visualization dashboard with statistical summaries and exportable georeferenced outputs</li>
+            <li>dNBR measures change in vegetation and soil. It does not measure structure loss, so severity in the burned neighborhoods is understated.</li>
+            <li>The class thresholds are the standard Key &amp; Benson breaks. They have not been calibrated with field plots for this fire.</li>
+            <li>Radar backscatter also responds to soil moisture and surface roughness, so it is shown as supporting evidence and is not used in the classification.</li>
+            <li>The after window is short (12 days), so persistent cloud can leave gaps.</li>
           </ul>
-          <p>The framework demonstrates how integrating optical and radar satellite data enables robust wildfire analysis even through smoke and clouds. This methodology provides emergency managers and ecologists with actionable intelligence for post-fire recovery planning and can be readily adapted to monitor other wildfire events by adjusting temporal and spatial parameters.</p>
+
+          <h2>References</h2>
+          <ul>
+            <li>Key, C.H. &amp; Benson, N.C. (2006). Landscape Assessment: ground measure of severity, the Composite Burn Index, and remote sensing of severity, the Normalized Burn Ratio. FIREMON, USDA Forest Service RMRS-GTR-164-CD.</li>
+            <li>Parks, S.A., Dillon, G.K. &amp; Miller, C. (2014). A new metric for quantifying burn severity: the Relativized Burn Ratio. <em>Remote Sensing</em>, 6(3), 1827–1844.</li>
+            <li><a href="https://un-spider.org/advisory-support/recommended-practices/recommended-practice-burn-severity" target="_blank" rel="noopener">UN-SPIDER Recommended Practice: Burn Severity<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+          </ul>
         </div>
     </div>
   </article>
