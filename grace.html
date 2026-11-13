@@ -12,6 +12,14 @@
   <link rel="stylesheet" href="theme-bauhaus.css">
   <script>document.documentElement.classList.add('js');</script>
   <script src="site.js" defer></script>
+  <style>
+    .ee-embed { position: relative; margin: 1rem 0 0.5rem; border: 2px solid var(--black, #111); background: #f4f3ef; aspect-ratio: 8 / 5; }
+    .ee-embed img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .ee-embed iframe { display: block; width: 100%; height: 100%; border: 0; }
+    .ee-embed-load { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 0 4px rgba(255,255,255,0.85); }
+    .ee-embed-alt { font-size: 0.9rem; }
+    @media (max-width: 640px) { .ee-embed { aspect-ratio: 3 / 4; } }
+  </style>
 </head>
 <body id="top">
   <a class="skip-link" href="#main">Skip to main content</a>
@@ -71,7 +79,15 @@
           <li><strong>Time Series Analysis:</strong> By examining data from 2003-2016, we can see long-term trends, focus on drought periods and analyze past impact of water storage management or even predict future scenarios when furthering the analysis.</li>
           <li><strong>Climate Correlation:</strong> The algorithm identifies relationships between climate factors (like precipitation and temperature) and water storage changes, helping predict future scenarios.</li>
         </ul>
-        
+
+        <h2>Interactive map</h2>
+        <p>The Earth Engine app below shows the GRACE water storage layers and charts for the Central Valley. It computes the layers live, so they can take a minute or two to appear.</p>
+        <div class="ee-embed" id="ee-embed">
+          <img src="img/graceobservation.png" width="1158" height="653" alt="Map of GRACE water storage anomalies across Central Valley watersheds, red for deficits and blue for surpluses">
+          <button type="button" class="btn btn-primary ee-embed-load" id="ee-embed-load">Load interactive map</button>
+        </div>
+        <p class="ee-embed-alt"><a href="https://ayhanxkosan.users.earthengine.app/view/californiareservoiranalysis" target="_blank" rel="noopener">Open the map full screen<span class="visually-hidden"> (opens in a new tab)</span></a></p>
+
         <div class="project-gallery">
           <div class="gallery-item">
             <a href="https://code.earthengine.google.com/51a5004ab58a3be61634ea778a2f8462" target="_blank" rel="noopener">
@@ -125,3 +141,17 @@
       </a>
     </div>
   </footer>
+  <script>
+    // Loads the Earth Engine app only on request, so visitors who do not open the map trigger no computation.
+    document.getElementById('ee-embed-load').addEventListener('click', function () {
+      var frame = document.createElement('iframe');
+      frame.src = 'https://ayhanxkosan.users.earthengine.app/view/californiareservoiranalysis';
+      frame.title = 'Interactive map of Central Valley water storage from GRACE (Google Earth Engine app)';
+      frame.setAttribute('allow', 'fullscreen');
+      var box = document.getElementById('ee-embed');
+      box.replaceChildren(frame);
+      frame.focus();
+    });
+  </script>
+</body>
+</html>
