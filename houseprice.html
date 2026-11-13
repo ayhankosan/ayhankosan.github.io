@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>US State Median Home Values (1940–2000) — Ayhan Kosan</title>
-  <meta name="description" content="Interactive map of US state median home values from the decennial census, 1940 to 2000, in constant 2000 dollars.">
+  <title>US State Median Home Values (1940–2025) — Ayhan Kosan</title>
+  <meta name="description" content="Interactive map of US state median home values from 1940 to 2025, from the decennial census and the American Community Survey, in constant 2025 dollars.">
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -165,24 +165,24 @@
           <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
           All projects
         </a>
-        <h1 class="page-title">Six Decades of US Home Values: State Medians from the Census, 1940–2000</h1>
+        <h1 class="page-title">Eight Decades of US Home Values: State Medians, 1940–2025</h1>
         <div class="project-info">
           <div class="project-category"><span class="meta-label">Category</span> Data Visualization, Web-Mapping, JavaScript</div>
           <div class="project-date"><span class="meta-label">Date</span> 2025</div>
         </div>
 
         <div class="map-page-intro project-description">
-          <h2>Median home value by state, 1940–2000</h2>
-          <p>Every decennial census since 1940 has asked homeowners what their house is worth. This map shows the state medians of those answers, adjusted for inflation to constant 2000 dollars, so the decades compare directly. Nationally the median value of a single-family home nearly quadrupled, from $30,600 in 1940 to $119,600 in 2000.</p>
-          <p>Switch between <strong>Value</strong>, which shows the dollar amounts on one fixed scale for every decade, and <strong>Compared with US median</strong>, which shows each state as a share of the national median for that year. Use the slider or Play to step through the decades. Hover over a state for its figures, and select one to see its full history below the map.</p>
+          <h2>Median home value by state, 1940–2025</h2>
+          <p>Since 1940 the Census Bureau has asked homeowners what their house is worth: in every decennial census through 2000, and every year since in the American Community Survey (ACS). This map shows the state medians of those answers from 1940 to 2025, all converted to 2025 dollars so the years compare directly. After inflation, the national median home value rose from about $57,000 in 1940 to $371,100 in 2025, roughly six and a half times as much.</p>
+          <p>Switch between <strong>Value</strong>, which shows the dollar amounts on one fixed scale for every decade, and <strong>Compared with US median</strong>, which shows each state as a share of the national median for that year. Use the slider or Play to step through the years. Hover over a state for its figures, and select one to see its full history below the map.</p>
         </div>
 
         <h2 class="visually-hidden">Interactive map</h2>
         <div class="hv-map-wrap">
           <div id="map" role="region" aria-label="Choropleth map of median home value by US state. Use the controls below the map to change the year and the view; the table under About the data lists the same values."></div>
           <div class="hv-map-title" aria-hidden="true">
-            <div class="yr" id="map-year">2000</div>
-            <div class="sub" id="map-sub">Median home value, 2000 dollars</div>
+            <div class="yr" id="map-year">2025</div>
+            <div class="sub" id="map-sub">Median home value, constant 2025 dollars</div>
           </div>
           <div class="hv-legend" id="legend" aria-live="polite"></div>
         </div>
@@ -194,13 +194,9 @@
           </div>
           <button id="play-button" class="hv-play" type="button" aria-controls="year-slider">Play</button>
           <div class="hv-slider">
-            <label for="year-slider" class="visually-hidden">Census year</label>
-            <input type="range" id="year-slider" min="1940" max="2000" step="10" value="2000" list="decades">
-            <datalist id="decades">
-              <option value="1940"></option><option value="1950"></option><option value="1960"></option>
-              <option value="1970"></option><option value="1980"></option><option value="1990"></option><option value="2000"></option>
-            </datalist>
-            <div class="hv-ticks" aria-hidden="true"><span>1940</span><span>1950</span><span>1960</span><span>1970</span><span>1980</span><span>1990</span><span>2000</span></div>
+            <label for="year-slider" class="visually-hidden">Year</label>
+            <input type="range" id="year-slider" min="0" max="9" step="1" value="9">
+            <div class="hv-ticks" aria-hidden="true"><span>1940</span><span>1950</span><span>1960</span><span>1970</span><span>1980</span><span>1990</span><span>2000</span><span>2010</span><span>2020</span><span>2025</span></div>
           </div>
         </div>
 
@@ -213,45 +209,52 @@
           <h2 id="about-data">About the data</h2>
           <dl>
             <dt>Measure</dt>
-            <dd>Median value of owner-occupied single-family homes on less than 10 acres, with no business or medical office on the property. Half the homes in a state were worth more and half less.</dd>
-            <dt>What "value" means</dt>
-            <dd>The value is the owner's own estimate of what the house and lot would sell for, given on the census questionnaire. It is not a recorded sale price, and it covers all owned homes, not only those that sold that year.</dd>
+            <dd>The median value of owner-occupied homes in each state: half the homes were worth more, half less. The value is the owner's own estimate of what the house and lot would sell for, not a recorded sale price, and it covers all owned homes, not only those that sold that year.</dd>
+            <dt>1940–2000</dt>
+            <dd>Decennial census, from the Census Bureau's Historical Census of Housing Tables. These cover owner-occupied single-family homes on less than 10 acres with no business or medical office on the property.</dd>
+            <dt>2010–2025</dt>
+            <dd>American Community Survey, table B25077, covering all owner-occupied homes, condominiums and mobile homes included. 2010 and 2025 are 1-year estimates. 2020 uses the 2016–2020 5-year estimates, because the Census Bureau did not release standard 1-year estimates for 2020 after pandemic disruption to data collection.</dd>
+            <dt>Change of definition</dt>
+            <dd>Because the ACS covers more kinds of homes, its medians run slightly lower than the single-family series. Census 2000 published both: $119,600 for single-family homes and $111,800 for all owned homes. The chart shows the all-homes 2000 value as a hollow square, and changes into 2010 are measured from it, so they compare like with like. Comparisons across the full 1940–2025 span include this switch.</dd>
             <dt>Dollars</dt>
-            <dd>Every figure is in constant 2000 dollars, adjusted for inflation by the Census Bureau. A rising line means home values grew faster than general prices.</dd>
+            <dd>Every figure is in constant 2025 dollars. The Census Bureau published the 1940–2000 values in 2000 dollars; these and the ACS values are converted to 2025 dollars with BLS CPI-U annual averages (2000: 172.2, 2010: 218.056, 2020: 258.811, 2025: 321.943). Values are rounded to the nearest $100. A rising line means home values grew faster than general prices.</dd>
+            <dt>Sampling error</dt>
+            <dd>ACS figures come from a sample survey; the state panel shows each one's 90% margin of error. For most states it is under 2% of the value, so differences of a few thousand dollars between neighboring ranks are not meaningful.</dd>
             <dt>Coverage</dt>
             <dd>50 states and the District of Columbia, which the Census Bureau treats as a state in these tables. Alaska and Hawaii have no 1940 value: both were territories and not part of the 1940 state tables. Puerto Rico is not included.</dd>
             <dt>Color classes</dt>
-            <dd><em>Value</em> uses the same eight fixed classes for every decade, so a color means the same dollar range in 1940 as in 2000. <em>Compared with US median</em> divides each state's value by that year's national median; values near 100% are white, below the median are blue and above it are red.</dd>
+            <dd><em>Value</em> uses the same eight fixed classes for every year, so a color means the same dollar range in 1940 as in 2025. <em>Compared with US median</em> divides each state's value by that year's national median, which also cancels out the change of definition; values near 100% are white, below the median are blue and above it are red.</dd>
             <dt>Caveats</dt>
             <dd>Owner estimates tend to lag the market when prices turn. The 1990 figures caught the end of a late-1980s boom in the Northeast and California, which is why several of those states show lower values in 2000 than in 1990. The basemap uses Web Mercator, which enlarges northern states, so judge states by color and not by size.</dd>
           </dl>
 
           <details>
-            <summary>All states for <span id="table-year">2000</span>, ranked by value</summary>
+            <summary>All states for <span id="table-year">2025</span>, ranked by value (<span id="table-source">ACS 2025, 1-year</span>, 2025 dollars)</summary>
             <div class="hv-table-wrap">
               <table class="hv-table" id="data-table">
-                <caption class="visually-hidden">Median home value by state for the selected census year, in 2000 dollars</caption>
-                <thead><tr><th scope="col">Rank</th><th scope="col" style="text-align:left">State</th><th scope="col">Median value</th><th scope="col">% of US median</th><th scope="col">Change from previous census</th></tr></thead>
+                <caption class="visually-hidden">Median home value by state for the selected year, in constant 2025 dollars</caption>
+                <thead><tr><th scope="col">Rank</th><th scope="col" style="text-align:left">State</th><th scope="col">Median value</th><th scope="col">% of US median</th><th scope="col">Change from previous year shown</th></tr></thead>
                 <tbody></tbody>
                 <tfoot></tfoot>
               </table>
             </div>
           </details>
 
-          <p class="data-source">Source: U.S. Census Bureau, <a href="https://www.census.gov/data/tables/time-series/dec/coh-values.html">Historical Census of Housing Tables: Home Values</a>, decennial censuses 1940–2000. Basemap © Esri, HERE, Garmin, © OpenStreetMap contributors. State boundaries: PublicaMundi US states GeoJSON.</p>
+          <p class="data-source">Sources: U.S. Census Bureau, <a href="https://www.census.gov/data/tables/time-series/dec/coh-values.html">Historical Census of Housing Tables: Home Values</a> (1940–2000); Census 2000 Summary File 3, tables H076 and H085; <a href="https://data.census.gov/table/ACSDT1Y2025.B25077">American Community Survey table B25077</a> (2010 and 2025 1-year, 2016–2020 5-year). Inflation: U.S. Bureau of Labor Statistics, <a href="https://data.bls.gov/timeseries/CUUR0000SA0">CPI-U annual averages</a>. Basemap © Esri, HERE, Garmin, © OpenStreetMap contributors. State boundaries: PublicaMundi US states GeoJSON.</p>
         </section>
 
         <section class="callout" aria-labelledby="tech-context">
           <h2 id="tech-context">Technical Context</h2>
           <ul>
             <li>Leaflet with the muted Esri Light Gray Canvas basemap; place labels sit on their own pane above the state colors so they stay readable</li>
-            <li>Fixed, manually defined class breaks with a ColorBrewer yellow–orange–red ramp, so colors stay comparable across all seven censuses</li>
+            <li>Two Census Bureau sources joined into one 1940–2025 series: decennial census tables to 2000 and American Community Survey table B25077 from 2010, all converted to 2025 dollars with BLS CPI-U, and a bridge value at 2000 that keeps the change of definition visible</li>
+            <li>Fixed, manually defined class breaks in 2025 dollars with a ColorBrewer yellow–orange–red ramp, so colors stay comparable across all ten years</li>
             <li>A second, diverging blue–red view normalized to the national median for each year, which takes out nationwide growth and shows the relative position of each state</li>
             <li>Legend built from the same break definitions as the map, with a count of states per class for the selected year</li>
-            <li>D3.js line chart of the selected state against the national median, with rank, share of median and decade change computed in the browser</li>
+            <li>D3.js line chart of the selected state against the national median, with rank, share of median, change and ACS margins of error computed in the browser</li>
             <li>Keyboard-accessible controls and a ranked data table as a non-visual alternative to the map</li>
           </ul>
-          <p>Some regional patterns: the District of Columbia had the highest median value in 1940 and 1950, and Hawaii from 1960 on. Arkansas, Mississippi and Oklahoma were among the lowest throughout. Western states such as Arizona, Nevada and Utah moved from below the national median in 1940 to above it by 2000.</p>
+          <p>Some regional patterns: the District of Columbia had the highest median value in 1940 and 1950, and Hawaii from 1960 on. Arkansas, Mississippi and Oklahoma were among the lowest throughout. Western states such as Arizona, Nevada and Utah moved from below the national median in 1940 to above it by 2000, and Montana and Idaho followed between 2000 and 2020.</p>
         </section>
       </div>
     </article>
@@ -276,10 +279,11 @@
     'use strict';
 
     /* ---------------- Data ---------------- */
-    // Median value of specified owner-occupied units, constant 2000 dollars.
-    // Source: U.S. Census Bureau, Historical Census of Housing Tables: Home Values.
-    const YEARS = [1940, 1950, 1960, 1970, 1980, 1990, 2000];
-    const US = {1940: 30600, 1950: 44600, 1960: 58600, 1970: 65300, 1980: 93400, 1990: 101100, 2000: 119600};
+    // 1940–2000: median value of specified owner-occupied single-family units, in 2000 dollars.
+    // Source: U.S. Census Bureau, Historical Census of Housing Tables: Home Values (2000 = Census 2000 SF3 H076).
+    const HIST_YEARS = [1940, 1950, 1960, 1970, 1980, 1990, 2000];
+    const YEARS = [...HIST_YEARS, 2010, 2020, 2025];
+    const US_HIST = {1940: 30600, 1950: 44600, 1960: 58600, 1970: 65300, 1980: 93400, 1990: 101100, 2000: 119600};
     const V = {
       "Alabama": [16800, 27100, 42400, 46900, 67100, 68600, 85100],
       "Alaska": [null, 21100, 44800, 87200, 151000, 120600, 144200],
@@ -333,20 +337,97 @@
       "Wisconsin": [33600, 48000, 62100, 66400, 96200, 79900, 112200],
       "Wyoming": [22600, 41300, 60600, 58800, 118400, 78700, 96600]
     };
+    // Nominal dollars as published: [Census 2000 SF3 H085 all owner-occupied median,
+    //  ACS 2010 1-year B25077, MOE, ACS 2016–2020 5-year B25077, MOE, ACS 2025 1-year B25077, MOE].
+    // MOEs are 90% margins of error. Retrieved from data.census.gov on 12 Nov 2026.
+    const A = {
+      "United States": [111800, 179900, 292, 229800, 188, 371100, 646],
+      "Alabama": [76700, 123900, 1515, 149600, 973, 246500, 3108],
+      "Alaska": [137400, 241400, 5365, 275600, 2308, 385100, 8954],
+      "Arizona": [109400, 168800, 1273, 242000, 963, 427600, 2683],
+      "Arkansas": [67400, 106300, 1591, 133600, 1009, 228400, 3677],
+      "California": [198900, 370900, 1528, 538500, 1127, 770700, 3949],
+      "Colorado": [160100, 236600, 1553, 369900, 1187, 567600, 5009],
+      "Connecticut": [160600, 288800, 2016, 279700, 1296, 423900, 4096],
+      "Delaware": [122000, 243600, 3644, 258300, 2479, 392600, 7385],
+      "District of Columbia": [153500, 426900, 16253, 618100, 10023, 715500, 24713],
+      "Florida": [93200, 164200, 756, 232000, 608, 396700, 2125],
+      "Georgia": [100600, 156200, 949, 190200, 860, 346500, 2425],
+      "Hawaii": [249300, 525400, 9714, 636400, 4160, 901500, 16299],
+      "Idaho": [102100, 165100, 2311, 235600, 1700, 457800, 6135],
+      "Illinois": [127800, 191800, 1301, 202100, 886, 294400, 1931],
+      "Indiana": [92500, 123300, 895, 148900, 542, 255200, 2289],
+      "Iowa": [82100, 123400, 1227, 153900, 867, 237000, 2264],
+      "Kansas": [81000, 127300, 1824, 157600, 869, 252600, 4302],
+      "Kentucky": [79600, 121600, 1429, 147100, 846, 242000, 2467],
+      "Louisiana": [77500, 137500, 1828, 168100, 915, 231800, 2979],
+      "Maine": [94300, 179100, 2735, 198000, 1886, 370300, 5877],
+      "Maryland": [143300, 301400, 2878, 325400, 1055, 445800, 3662],
+      "Massachusetts": [182800, 334100, 1711, 398800, 1388, 626900, 4178],
+      "Michigan": [110300, 123300, 733, 162600, 471, 269500, 1932],
+      "Minnesota": [118100, 194300, 1279, 235700, 683, 353800, 2300],
+      "Mississippi": [64700, 100100, 2117, 125500, 1286, 192700, 4627],
+      "Missouri": [86900, 139000, 1279, 163600, 597, 271400, 2495],
+      "Montana": [95800, 181200, 3525, 244900, 2383, 427500, 6599],
+      "Nebraska": [86900, 127600, 1502, 164000, 720, 279200, 3160],
+      "Nevada": [132500, 174800, 2325, 290200, 1388, 459400, 5404],
+      "New Hampshire": [127500, 243000, 3163, 272300, 1600, 487100, 8193],
+      "New Jersey": [167900, 339200, 1549, 343500, 980, 530800, 3638],
+      "New Mexico": [94600, 161200, 2450, 175700, 1688, 293400, 5069],
+      "New York": [147600, 296500, 2478, 325000, 1056, 470900, 5866],
+      "North Carolina": [95800, 154200, 988, 182100, 839, 342800, 2737],
+      "North Dakota": [68300, 123000, 3132, 199900, 1886, 281700, 6105],
+      "Ohio": [100500, 134400, 767, 151400, 464, 254100, 1892],
+      "Oklahoma": [67700, 111400, 1236, 142400, 956, 234000, 2384],
+      "Oregon": [145800, 244500, 1824, 336700, 1393, 507900, 4066],
+      "Pennsylvania": [94800, 165500, 863, 187500, 571, 292400, 1766],
+      "Rhode Island": [130500, 254500, 4443, 276600, 2203, 478700, 8075],
+      "South Carolina": [83100, 138100, 1274, 170100, 818, 306200, 3027],
+      "South Dakota": [74300, 129700, 3184, 174600, 1416, 299100, 6467],
+      "Tennessee": [88300, 139000, 1433, 177600, 917, 341200, 3027],
+      "Texas": [77800, 128100, 783, 187200, 597, 318100, 1418],
+      "Utah": [142600, 217200, 1811, 305400, 1588, 543400, 4242],
+      "Vermont": [111200, 216800, 3888, 230900, 2056, 359800, 8499],
+      "Virginia": [118800, 249100, 1591, 282800, 1117, 422600, 3315],
+      "Washington": [158800, 271800, 1696, 366800, 1278, 605600, 4205],
+      "West Virginia": [66000, 95100, 2307, 123200, 1225, 176300, 4940],
+      "Wisconsin": [109900, 169400, 826, 189200, 569, 316500, 2156],
+      "Wyoming": [91500, 180100, 3876, 228000, 2506, 357300, 9475]
+    };
+
+    // CPI-U annual averages, U.S. city average, 1982–84 = 100 (BLS series CUUR0000SA0).
+    // Converts every value to constant 2025 dollars; pre-2000 values are already in 2000 dollars.
+    const CPI = {2000: 172.2, 2010: 218.056, 2020: 258.811, 2025: 321.943};
+    const BASE = 2025;
+    const toBase = (v, y) => (v == null ? null : Math.round(v * CPI[BASE] / CPI[y <= 2000 ? 2000 : y] / 100) * 100);
+    const ACS_IDX = {2010: 1, 2020: 3, 2025: 5};
+
     const STATES = Object.keys(V);
-    const val = (s, y) => (V[s] ? V[s][YEARS.indexOf(y)] : undefined) ?? null;
+    const DATA = {}, MOE = {}, ALL2000 = {};
+    const build = (name, hist) => {
+      const a = A[name], d = {}, m = {};
+      HIST_YEARS.forEach((y, i) => { d[y] = toBase(hist[i], y); });
+      for (const y of [2010, 2020, 2025]) { d[y] = toBase(a[ACS_IDX[y]], y); m[y] = toBase(a[ACS_IDX[y] + 1], y); }
+      DATA[name] = d; MOE[name] = m; ALL2000[name] = toBase(a[0], 2000);
+    };
+    STATES.forEach(s => build(s, V[s]));
+    build('United States', HIST_YEARS.map(y => US_HIST[y]));
+    const val = (s, y) => (DATA[s] ? DATA[s][y] : null) ?? null;
+    const US = y => DATA['United States'][y];
+    const prevYear = y => YEARS[YEARS.indexOf(y) - 1];
+    const SOURCE = y => (y <= 2000 ? `Census ${y}` : y === 2010 ? 'ACS 2010, 1-year' : y === 2020 ? 'ACS 2016–2020, 5-year' : 'ACS 2025, 1-year');
 
     /* ---------------- Classification ---------------- */
-    // Fixed breaks shared by every decade (ColorBrewer YlOrRd, lightest class dropped for basemap contrast).
+    // Fixed breaks in 2025 dollars, shared by every year (ColorBrewer YlOrRd, lightest class dropped for basemap contrast).
     const VALUE_CLASSES = [
-      {min: 0,      max: 40000,    color: '#ffeda0', label: 'Under $40k'},
-      {min: 40000,  max: 60000,    color: '#fed976', label: '$40k – $60k'},
-      {min: 60000,  max: 80000,    color: '#feb24c', label: '$60k – $80k'},
-      {min: 80000,  max: 100000,   color: '#fd8d3c', label: '$80k – $100k'},
-      {min: 100000, max: 125000,   color: '#fc4e2a', label: '$100k – $125k'},
-      {min: 125000, max: 150000,   color: '#e31a1c', label: '$125k – $150k'},
-      {min: 150000, max: 200000,   color: '#bd0026', label: '$150k – $200k'},
-      {min: 200000, max: Infinity, color: '#800026', label: '$200k and over'}
+      {min: 0,      max: 75000,    color: '#ffeda0', label: 'Under $75k'},
+      {min: 75000,  max: 125000,   color: '#fed976', label: '$75k – $125k'},
+      {min: 125000, max: 175000,   color: '#feb24c', label: '$125k – $175k'},
+      {min: 175000, max: 250000,   color: '#fd8d3c', label: '$175k – $250k'},
+      {min: 250000, max: 350000,   color: '#fc4e2a', label: '$250k – $350k'},
+      {min: 350000, max: 500000,   color: '#e31a1c', label: '$350k – $500k'},
+      {min: 500000, max: 700000,   color: '#bd0026', label: '$500k – $700k'},
+      {min: 700000, max: Infinity, color: '#800026', label: '$700k and over'}
     ];
     // Diverging classes around 100% of the national median (ColorBrewer RdBu, colorblind-safe).
     const RATIO_CLASSES = [
@@ -366,14 +447,14 @@
     const fmtChg = v => (v >= 0 ? '+' : '−') + Math.abs(v * 100).toFixed(1) + '%';
 
     let mode = 'value';
-    let year = 2000;
+    let year = 2025;
     let selected = 'California';
     let playing = false, timer = null;
 
     const metric = (s, y) => {
       const v = val(s, y);
       if (v == null) return null;
-      return mode === 'value' ? v : v / US[y];
+      return mode === 'value' ? v : v / US(y);
     };
     const classes = () => (mode === 'value' ? VALUE_CLASSES : RATIO_CLASSES);
     const classOf = m => classes().find(c => m >= c.min && m < c.max);
@@ -383,10 +464,12 @@
       const ranked = STATES.filter(x => val(x, y) != null).sort((a, b) => val(b, y) - val(a, y));
       return {rank: ranked.indexOf(s) + 1, of: ranked.length};
     }
+    // Change from the previous year shown. For 2010 the base is the 2000 all-homes median,
+    // so both ends measure the same thing (all owner-occupied homes).
     function prevChange(s, y) {
       const i = YEARS.indexOf(y);
       if (i < 1) return null;
-      const a = val(s, YEARS[i - 1]), b = val(s, y);
+      const a = y === 2010 ? ALL2000[s] : val(s, YEARS[i - 1]), b = val(s, y);
       return a && b ? (b - a) / a : null;
     }
 
@@ -457,8 +540,8 @@
       const v = val(s, year);
       if (v == null) return `<strong>${s}</strong>No ${year} value in the census tables`;
       const r = rankOf(s, year), c = prevChange(s, year);
-      return `<strong>${s}, ${year}</strong>${fmt$(v)} · ${fmtPct(v / US[year])} of US median<br>` +
-             `Rank ${r.rank} of ${r.of}` + (c != null ? ` · ${fmtChg(c)} since ${year - 10}` : '');
+      return `<strong>${s}, ${year}</strong>${fmt$(v)} · ${fmtPct(v / US(year))} of US median<br>` +
+             `Rank ${r.rank} of ${r.of}` + (c != null ? ` · ${fmtChg(c)} since ${prevYear(year)}` : '');
     }
 
     fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json')
@@ -514,14 +597,14 @@
         counts[cls.indexOf(classOf(m))]++;
       });
       const title = mode === 'value' ? 'Median home value' : 'Share of US median value';
-      const unit = mode === 'value' ? 'Constant 2000 dollars · same scale every decade' : `100% = US median for ${year}`;
+      const unit = mode === 'value' ? 'Constant 2025 dollars · same scale every year' : `100% = US median for ${year}`;
       // Highest class first so the legend reads top-down like the ramp.
       const rows = cls.map((c, i) => ({c, n: counts[i]})).reverse().map(({c, n}) =>
         `<div class="hv-legend-row"><span class="sw" style="background:${c.color}"></span><span>${c.label}</span><span class="n">${n}</span></div>`).join('');
       const nd = missing ? `<div class="hv-legend-row nodata"><span class="sw"></span><span>No data</span><span class="n">${missing}</span></div>` : '';
       document.getElementById('legend').innerHTML =
         `<h3>${title}, ${year}</h3><p class="unit">${unit}</p>${rows}${nd}` +
-        `<div class="us">US median: ${fmt$(US[year])}</div>` +
+        `<div class="us">US median: ${fmt$(US(year))}</div>` +
         `<div class="unit" style="margin:0.2rem 0 0">Numbers = states in class</div>`;
     }
 
@@ -535,18 +618,22 @@
       const r = rankOf(s, year), c = prevChange(s, year);
       const first = YEARS.find(y => val(s, y) != null);
       const total = first < year ? (v - val(s, first)) / val(s, first) : null;
-      const ratio = v / US[year];
+      const ratio = v / US(year);
       const cls = x => (x >= 0 ? 'up' : 'down');
+      const moe = MOE[s][year];
+      const crosses = year > 2000;
       el.innerHTML = `
         <h3>${s}</h3>
-        <p class="hint">Census ${year} · select another state on the map</p>
+        <p class="hint">${SOURCE(year)} · select another state on the map</p>
         <dl>
           <div class="big">${fmt$(v)}</div>
+          ${moe ? `<dt style="grid-column:1/-1;margin-top:-0.4rem;font-size:0.8rem">± ${fmt$(moe)} margin of error (90%)</dt>` : ''}
           <dt>Share of US median</dt><dd class="${ratio >= 1 ? 'up' : 'down'}">${fmtPct(ratio)}</dd>
           <dt>Rank (1 = highest)</dt><dd>${r.rank} of ${r.of}</dd>
-          <dt>Change since ${year - 10}</dt><dd class="${c != null ? cls(c) : ''}">${c != null ? fmtChg(c) : '—'}</dd>
-          <dt>Change since ${first}</dt><dd class="${total != null ? cls(total) : ''}">${total != null ? fmtChg(total) : '—'}</dd>
-        </dl>`;
+          ${c != null ? `<dt>Change since ${prevYear(year)}</dt><dd class="${cls(c)}">${fmtChg(c)}</dd>` : ''}
+          ${total != null && prevYear(year) !== first ? `<dt>Change since ${first}${crosses ? '*' : ''}</dt><dd class="${cls(total)}">${fmtChg(total)}</dd>` : ''}
+        </dl>
+        <p class="hint" style="margin:0.8rem 0 0">All values in 2025 dollars.${year === 2010 ? ' The 2010 change is measured against the 2000 median for all owned homes.' : ''}${crosses ? ' * Spans the 2000/2010 switch from single-family homes to all owned homes.' : ''}</p>`;
     }
 
     /* ---------------- Chart ---------------- */
@@ -558,13 +645,18 @@
       const m = {top: narrow ? 52 : 34, right: 24, bottom: 34, left: 58};
       const w = W - m.left - m.right, h = H - m.top - m.bottom;
       const sData = YEARS.map(y => ({y, v: val(selected, y)})).filter(d => d.v != null);
-      const uData = YEARS.map(y => ({y, v: US[y]}));
+      const uData = YEARS.map(y => ({y, v: US(y)}));
+      // Census single-family series to 2000; ACS all-homes series from the 2000 all-homes value onward.
+      const split = arr => [arr.filter(d => d.y <= 2000), arr.filter(d => d.y > 2000)];
+      const [sHist, sAcs] = split(sData), [uHist, uAcs] = split(uData);
+      sAcs.unshift({y: 2000, v: ALL2000[selected], bridge: true});
+      uAcs.unshift({y: 2000, v: ALL2000['United States'], bridge: true});
       const maxV = d3.max([...sData, ...uData], d => d.v);
 
       const svg = d3.select(box).append('svg').attr('viewBox', `0 0 ${W} ${H}`)
-        .attr('role', 'img').attr('aria-label', `${selected} median home value compared with the US median, 1940 to 2000`);
+        .attr('role', 'img').attr('aria-label', `${selected} median home value compared with the US median, 1940 to 2025, in 2025 dollars`);
       const g = svg.append('g').attr('transform', `translate(${m.left},${m.top})`);
-      const x = d3.scaleLinear().domain([1940, 2000]).range([0, w]);
+      const x = d3.scaleLinear().domain([1940, 2025]).range([0, w]);
       const y = d3.scaleLinear().domain([0, maxV * 1.08]).nice().range([h, 0]);
 
       g.append('g').attr('class', 'grid').call(d3.axisLeft(y).ticks(5).tickSize(-w).tickFormat(''))
@@ -574,15 +666,23 @@
       g.append('g').call(d3.axisLeft(y).ticks(5).tickFormat(fmtK)).call(a => a.select('.domain').remove())
         .call(a => a.selectAll('text').style('font-size', '11px'));
 
+      // Band marking the change of source between 2000 and 2010.
+      g.append('rect').attr('x', x(2000)).attr('width', x(2010) - x(2000)).attr('y', 0).attr('height', h).attr('fill', '#f5f2ea');
+      g.append('text').attr('x', (x(2000) + x(2010)) / 2).attr('y', 12).attr('text-anchor', 'middle')
+        .style('font-size', '10px').style('fill', '#595959').text('Census → ACS');
       g.append('line').attr('x1', x(year)).attr('x2', x(year)).attr('y1', 0).attr('y2', h)
         .attr('stroke', '#111').attr('stroke-dasharray', '2,3');
 
       const line = d3.line().x(d => x(d.y)).y(d => y(d.v));
-      g.append('path').datum(uData).attr('fill', 'none').attr('stroke', '#777').attr('stroke-width', 2).attr('stroke-dasharray', '6,4').attr('d', line);
-      g.append('path').datum(sData).attr('fill', 'none').attr('stroke', '#c8261a').attr('stroke-width', 3).attr('d', line);
+      for (const seg of [uHist, uAcs]) g.append('path').datum(seg).attr('fill', 'none').attr('stroke', '#777').attr('stroke-width', 2).attr('stroke-dasharray', '6,4').attr('d', line);
+      for (const seg of [sHist, sAcs]) g.append('path').datum(seg).attr('fill', 'none').attr('stroke', '#c8261a').attr('stroke-width', 3).attr('d', line);
+      // Hollow squares: 2000 values for all owned homes, the starting point of the ACS series.
+      g.selectAll('.bridge').data([sAcs[0], uAcs[0]].filter(d => d.v != null)).enter().append('rect')
+        .attr('x', d => x(d.y) - 4).attr('y', d => y(d.v) - 4).attr('width', 8).attr('height', 8)
+        .attr('fill', '#fff').attr('stroke', (d, i) => (i === 0 ? '#c8261a' : '#777')).attr('stroke-width', 2);
 
       svg.append('text').attr('x', m.left).attr('y', 16).style('font-size', '13px').style('font-weight', 600)
-        .text(`${selected} vs. US median · constant 2000 dollars`);
+        .text(`${selected} vs. US median · constant 2025 dollars`);
       const lg = svg.append('g').attr('transform', narrow ? `translate(${m.left},34)` : `translate(${W - m.right - 190},12)`);
       lg.append('line').attr('x1', 0).attr('x2', 22).attr('y1', 0).attr('y2', 0).attr('stroke', '#c8261a').attr('stroke-width', 3);
       lg.append('text').attr('x', 28).attr('y', 4).style('font-size', '11px').text(selected.length > 12 ? selected.slice(0, 12) + '…' : selected);
@@ -591,7 +691,8 @@
 
       const tip = d3.select(box).append('div').attr('class', 'hv-chart-tip');
       const show = (ev, label, d, series) => {
-        const i = YEARS.indexOf(d.y), p = i > 0 ? series[i - 1] : null;
+        const i = YEARS.indexOf(d.y);
+        const p = d.y === 2010 ? {y: '2000 (all homes)', v: ALL2000[label === 'US' ? 'United States' : selected]} : (i > 0 ? series[i - 1] : null);
         const chg = p && p.v ? ` · ${fmtChg((d.v - p.v) / p.v)} vs ${p.y}` : '';
         const [px, py] = d3.pointer(ev, box);
         tip.html(`<strong>${label} ${d.y}</strong><br>${fmt$(d.v)}${chg}`)
@@ -613,20 +714,21 @@
       const rows = STATES.filter(s => val(s, year) != null).sort((a, b) => val(b, year) - val(a, year));
       document.querySelector('#data-table tbody').innerHTML = rows.map((s, i) => {
         const v = val(s, year), c = prevChange(s, year);
-        return `<tr><td>${i + 1}</td><td style="text-align:left">${s}</td><td>${fmt$(v)}</td><td>${fmtPct(v / US[year])}</td><td>${c != null ? fmtChg(c) : '—'}</td></tr>`;
+        return `<tr><td>${i + 1}</td><td style="text-align:left">${s}</td><td>${fmt$(v)}</td><td>${fmtPct(v / US(year))}</td><td>${c != null ? fmtChg(c) : '—'}</td></tr>`;
       }).join('');
-      const uc = year > 1940 ? (US[year] - US[year - 10]) / US[year - 10] : null;
+      const uc = prevChange('United States', year);
       document.querySelector('#data-table tfoot').innerHTML =
-        `<tr><td></td><td style="text-align:left">United States</td><td>${fmt$(US[year])}</td><td>100%</td><td>${uc != null ? fmtChg(uc) : '—'}</td></tr>`;
+        `<tr><td></td><td style="text-align:left">United States</td><td>${fmt$(US(year))}</td><td>100%</td><td>${uc != null ? fmtChg(uc) : '—'}</td></tr>`;
+      document.getElementById('table-source').textContent = SOURCE(year);
     }
 
     /* ---------------- Update loop ---------------- */
     function update() {
-      document.getElementById('year-slider').value = year;
+      document.getElementById('year-slider').value = YEARS.indexOf(year);
       document.getElementById('year-slider').setAttribute('aria-valuetext', String(year));
       document.getElementById('map-year').textContent = year;
       document.getElementById('map-sub').textContent = mode === 'value'
-        ? 'Median home value, constant 2000 dollars'
+        ? 'Median home value, constant 2025 dollars'
         : 'Median home value as a share of the US median';
       restyle(); renderLegend(); renderCard(); renderChart(); renderTable();
     }
@@ -642,14 +744,15 @@
     document.getElementById('mode-ratio').addEventListener('click', () => setMode('ratio'));
 
     function stop() { clearInterval(timer); playing = false; document.getElementById('play-button').textContent = 'Play'; }
-    document.getElementById('year-slider').addEventListener('input', e => { stop(); year = +e.target.value; update(); });
+    document.getElementById('year-slider').addEventListener('input', e => { stop(); year = YEARS[+e.target.value]; update(); });
     document.getElementById('play-button').addEventListener('click', function () {
       if (playing) return stop();
       playing = true; this.textContent = 'Pause';
-      if (year === 2000) { year = 1940; update(); }
+      if (year === YEARS[YEARS.length - 1]) { year = YEARS[0]; update(); }
       timer = setInterval(() => {
-        if (year >= 2000) return stop();
-        year += 10; update();
+        const i = YEARS.indexOf(year);
+        if (i >= YEARS.length - 1) return stop();
+        year = YEARS[i + 1]; update();
       }, 1200);
     });
 
