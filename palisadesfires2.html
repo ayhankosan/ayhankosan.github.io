@@ -12,6 +12,16 @@
   <link rel="stylesheet" href="theme-bauhaus.css">
   <script>document.documentElement.classList.add('js');</script>
   <script src="site.js" defer></script>
+  <style>
+    .ee-embed { position: relative; margin: 1rem 0 0.5rem; border: 2px solid var(--black, #111); background: #f4f3ef; aspect-ratio: 8 / 5; }
+    .ee-embed iframe { display: block; width: 100%; height: 100%; border: 0; }
+    .ee-embed-cover { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 1.5rem; text-align: center;
+      background: linear-gradient(135deg, #fed976 0 22%, #fd8d3c 22% 44%, #e31a1c 44% 66%, #800026 66% 100%); }
+    .ee-embed-cover p { margin: 0; padding: 0.35rem 0.7rem; background: #fff; border: 2px solid var(--black, #111); font-weight: 600; }
+    .ee-embed-load { box-shadow: 0 0 0 4px rgba(255,255,255,0.85); }
+    .ee-embed-alt { font-size: 0.9rem; }
+    @media (max-width: 640px) { .ee-embed { aspect-ratio: 3 / 4; } }
+  </style>
 </head>
 <body id="top">
   <a class="skip-link" href="#main">Skip to main content</a>
@@ -49,7 +59,7 @@
           <span class="meta-label">Date</span> March 2025 · updated November 2026
         </div>
         <div class="project-link">
-          <span class="meta-label">Project App</span> <a href="https://ayhanxkosan.users.earthengine.app/view/palisadesfire2025" target="_blank" rel="noopener">View on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
+          <span class="meta-label">Project App</span> <a href="https://ayhanxkosan.users.earthengine.app/view/palisadesburnanalysis" target="_blank" rel="noopener">View on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
         </div>
         <div class="project-code">
           <span class="meta-label">Project Code</span> <a href="https://github.com/ayhankosan/ayhankosan.github.io/blob/main/code/palisades_burn_severity.js" target="_blank" rel="noopener">View the code on GitHub<span class="visually-hidden"> (opens in a new tab)</span></a>
@@ -59,6 +69,15 @@
         <div class="project-description">
           <h2>Project Overview</h2>
           <p>The Palisades Fire started on January 7, 2025 in the Santa Monica Mountains and burned into Pacific Palisades and Malibu before it was contained on January 31. This project maps burn severity across the fire with Sentinel-2 optical imagery and adds Sentinel-1 radar change as a second, cloud-independent signal. The results are published in an interactive Google Earth Engine app.</p>
+
+
+          <div class="ee-embed" id="ee-embed">
+            <div class="ee-embed-cover">
+              <p>Interactive burn severity app: layers, before/after swipe, inspector</p>
+              <button type="button" class="btn btn-primary ee-embed-load" id="ee-embed-load">Load interactive map</button>
+            </div>
+          </div>
+          <p class="ee-embed-alt"><a href="https://ayhanxkosan.users.earthengine.app/view/palisadesburnanalysis" target="_blank" rel="noopener">Open the app full screen<span class="visually-hidden"> (opens in a new tab)</span></a></p>
 
           <h2>Data</h2>
           <ul>
@@ -89,17 +108,6 @@
             <li>Exports of all rasters, moderate-to-high severity polygons and the class area table</li>
           </ul>
 
-          <div class="project-gallery">
-            <div class="gallery-item">
-              <a href="https://ayhanxkosan.users.earthengine.app/view/palisadesfire2025" target="_blank" rel="noopener">
-                <img src="img/palisadesfire.png" alt="Burn severity map of the 2025 Palisades Fire in the Earth Engine app"><span class="visually-hidden"> (opens in a new tab)</span></a>
-              <p class="caption">Burn severity map of the Palisades Fire in the Earth Engine app.
-                <a class="inline-cta" href="https://ayhanxkosan.users.earthengine.app/view/palisadesfire2025" target="_blank" rel="noopener">
-                  <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                  View on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
-              </p>
-            </div>
-          </div>
           <h2>Limitations</h2>
           <ul>
             <li>dNBR measures change in vegetation and soil. It does not measure structure loss, so severity in the burned neighborhoods is understated.</li>
@@ -132,5 +140,17 @@
       </a>
     </div>
   </footer>
+  <script>
+    // Loads the Earth Engine app only on request, so visitors who do not open the map trigger no computation.
+    document.getElementById('ee-embed-load').addEventListener('click', function () {
+      var frame = document.createElement('iframe');
+      frame.src = 'https://ayhanxkosan.users.earthengine.app/view/palisadesburnanalysis';
+      frame.title = 'Interactive burn severity map of the 2025 Palisades Fire (Google Earth Engine app)';
+      frame.setAttribute('allow', 'fullscreen');
+      var box = document.getElementById('ee-embed');
+      box.replaceChildren(frame);
+      frame.focus();
+    });
+  </script>
 </body>
 </html>
