@@ -60,7 +60,7 @@
           <span class="meta-label">Project App</span> <a href="https://ayhanxkosan.users.earthengine.app/view/californiareservoiranalysis" target="_blank" rel="noopener">View the App<span class="visually-hidden"> (opens in a new tab)</span></a>
         </div>
         <div class="project-link">
-          <span class="meta-label">Project Code</span> <a href="https://code.earthengine.google.com/51a5004ab58a3be61634ea778a2f8462" target="_blank" rel="noopener">View on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
+          <span class="meta-label">Project Code</span> <a href="https://code.earthengine.google.com/e9ce33efa2f4fff8a88559be40ffddec" target="_blank" rel="noopener">View on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
         </div>
       </div>
       
@@ -69,31 +69,31 @@
         <p>This Google Earth Engine Script tracks California's water resources using NASA's GRACE (Gravity Recovery and Climate Experiment) satellite data. Through the payload, it is possible to detect changes in Earth's gravity field caused by water movement, allowing us to "see" underground water storage changes that would otherwise be invisible. By combining this satellite data with climate measurements and watershed models, this tool helps visualize and understand California's watershed challenges.</p>
         
         <h2>Technical Approach</h2>
-        <p>This analysis focuses on California's Central Valley, the agricultural heartland that depends critically on water resources. Here's how the script works:</p>
-        
+        <p>The analysis covers the Central Valley's three river basins, the Sacramento, San Joaquin and Tulare Lake (about 155,000 km²), from April 2002 to September 2024.</p>
         <ul>
-          <li><strong>GRACE Satellite Data:</strong> The twin satellites measure tiny variations in Earth's gravity caused by water mass changes. When groundwater depletes, the satellites detect a subtle decrease in gravitational pull, allowing us to map deviations from normal water levels, in this case water storage anomalies.</li>
-          <li><strong>Terrain Analysis:</strong> Using USGS SRTM (Shuttle Radar Topography Mission) data, the script analyzes elevation, slope and aspect to understand how water flows across landscapes and where it naturally accumulates.</li>
-          <li><strong>Climate Integration:</strong> NASA's DAYMET climate data provides daily temperature and precipitation measurements, helping us correlate weather patterns with water storage changes.</li>
-          <li><strong>Reservoir Monitoring:</strong> The script tracks major reservoirs capacity and actual water levels, helping us understand the amount of available water stored in reservoirs.</li>
-          <li><strong>Time Series Analysis:</strong> By examining data from 2003-2016, we can see long-term trends, focus on drought periods and analyze past impact of water storage management or even predict future scenarios when furthering the analysis.</li>
-          <li><strong>Climate Correlation:</strong> The algorithm identifies relationships between climate factors (like precipitation and temperature) and water storage changes, helping predict future scenarios.</li>
+          <li><strong>Total water storage:</strong> Monthly basin averages from NASA JPL's GRACE and GRACE-FO mascon solutions (RL06.3 v04), with JPL's uncertainty estimate. Months without a solution, including the 2017–2018 gap between the two missions, stay as gaps.</li>
+          <li><strong>Groundwater estimate:</strong> Soil moisture (0–2 m) and snow water equivalent from the FLDAS Noah land-surface model are subtracted from total storage, leaving groundwater plus surface water. All components are measured against the same 2004–2009 baseline. For 2003–2016, reservoir storage from California's CDEC network is also removed.</li>
+          <li><strong>Trends:</strong> A fit that separates the long-term trend from the annual and semi-annual cycle, reported in cm and km³ of water per year, for the full record and for the 2007–09, 2012–16 and 2020–22 droughts. Uncertainties account for month-to-month correlation.</li>
+          <li><strong>Water years:</strong> Storage change from one October–September water year to the next, compared with PRISM precipitation for the basins.</li>
+          <li><strong>Maps:</strong> A storage trend map and water-year anomaly maps at the native mascon grid. GRACE resolves regions of roughly 300 km, so the maps show regional patterns, not local detail.</li>
         </ul>
 
         <h2>Interactive map</h2>
-        <p>The Earth Engine app below shows the GRACE water storage layers and charts for the Central Valley. It computes the layers live, so they can take a minute or two to appear.</p>
+        <p>The Earth Engine app below holds the charts, the trend figures for each drought and a water-year map selector. It computes everything live, so the layers and charts can take a minute or two to appear.</p>
         <div class="ee-embed" id="ee-embed">
           <img src="img/graceobservation.png" width="1158" height="653" alt="Map of GRACE water storage anomalies across Central Valley watersheds, red for deficits and blue for surpluses">
           <button type="button" class="btn btn-primary ee-embed-load" id="ee-embed-load">Load interactive map</button>
         </div>
         <p class="ee-embed-alt"><a href="https://ayhanxkosan.users.earthengine.app/view/californiareservoiranalysis" target="_blank" rel="noopener">Open the map full screen<span class="visually-hidden"> (opens in a new tab)</span></a></p>
 
+        <h2>Earlier version, 2003–2016</h2>
+        <p>These images come from the first version of the analysis, which used the GRACE-only record.</p>
         <div class="project-gallery">
           <div class="gallery-item">
-            <a href="https://code.earthengine.google.com/51a5004ab58a3be61634ea778a2f8462" target="_blank" rel="noopener">
+            <a href="https://code.earthengine.google.com/e9ce33efa2f4fff8a88559be40ffddec" target="_blank" rel="noopener">
               <img src="img/graceobservation.png" alt="Map of GRACE water storage anomalies across Central Valley watersheds, red for deficits and blue for surpluses"><span class="visually-hidden"> (opens in a new tab)</span></a>
             <p class="caption">This visualization shows water storage anomalies across California's Central Valley watersheds. The red areas indicate significant water deficits (drier than normal), while blue areas show water surpluses. The intensity of color represents the severity of the condition. This map helps identify regions under water stress that might not be obvious from surface observations alone.
-              <a class="inline-cta" href="https://code.earthengine.google.com/51a5004ab58a3be61634ea778a2f8462" target="_blank" rel="noopener">
+              <a class="inline-cta" href="https://code.earthengine.google.com/e9ce33efa2f4fff8a88559be40ffddec" target="_blank" rel="noopener">
                 <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                 View on Google Earth Engine<span class="visually-hidden"> (opens in a new tab)</span></a>
             </p>
