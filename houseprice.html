@@ -238,13 +238,13 @@
             </div>
           </details>
 
-          <p class="data-source">Source: U.S. Census Bureau, <a href="https://www.census.gov/data/tables/time-series/dec/coh-values.html">Historical Census of Housing Tables: Home Values</a>, decennial censuses 1940–2000. Basemap © OpenStreetMap contributors, © CARTO. State boundaries: PublicaMundi US states GeoJSON.</p>
+          <p class="data-source">Source: U.S. Census Bureau, <a href="https://www.census.gov/data/tables/time-series/dec/coh-values.html">Historical Census of Housing Tables: Home Values</a>, decennial censuses 1940–2000. Basemap © Esri, HERE, Garmin, © OpenStreetMap contributors. State boundaries: PublicaMundi US states GeoJSON.</p>
         </section>
 
         <section class="callout" aria-labelledby="tech-context">
           <h2 id="tech-context">Technical Context</h2>
           <ul>
-            <li>Leaflet with a muted CARTO Positron basemap; place labels sit on their own pane above the state colors so they stay readable</li>
+            <li>Leaflet with the muted Esri Light Gray Canvas basemap; place labels sit on their own pane above the state colors so they stay readable</li>
             <li>Fixed, manually defined class breaks with a ColorBrewer yellow–orange–red ramp, so colors stay comparable across all seven censuses</li>
             <li>A second, diverging blue–red view normalized to the national median for each year, which takes out nationwide growth and shows the relative position of each state</li>
             <li>Legend built from the same break definitions as the map, with a count of states per class for the selected year</li>
@@ -407,16 +407,17 @@
     };
     fitLower48();
 
-    // Muted base without labels, states in the overlay pane, labels on their own pane above.
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a> | Data: US Census Bureau',
-      subdomains: 'abcd', maxZoom: 19
+    // Muted Esri Light Gray Canvas (no API key needed); reference labels sit on their own pane above the states.
+    const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/';
+    L.tileLayer(ESRI + 'World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Basemap &copy; <a href="https://www.esri.com">Esri</a>, HERE, Garmin, &copy; OpenStreetMap contributors | Data: US Census Bureau',
+      maxZoom: 16
     }).addTo(map);
     map.createPane('labels');
     map.getPane('labels').style.zIndex = 650;
     map.getPane('labels').style.pointerEvents = 'none';
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd', maxZoom: 19, pane: 'labels', opacity: 0.85
+    L.tileLayer(ESRI + 'World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 16, pane: 'labels', opacity: 0.9
     }).addTo(map);
 
     // Region shortcuts for Alaska and Hawaii, which sit outside the lower-48 view.
@@ -441,6 +442,9 @@
     map.addControl(new Regions());
 
     let statesLayer = null;
+    let hovered = null;
+    // Single shared hover tooltip, reused for every state.
+    const hoverTip = L.tooltip({className: 'hv-tip', direction: 'top', offset: [0, -10], interactive: false});
     const baseStyle = s => ({
       fillColor: colorOf(metric(s, year)),
       fillOpacity: 0.88,
@@ -465,10 +469,18 @@
           style: f => baseStyle(f.properties.name),
           onEachFeature: (f, layer) => {
             const s = f.properties.name;
-            layer.bindTooltip(() => tipHtml(s), {sticky: true, className: 'hv-tip', direction: 'top', offset: [0, -8]});
             layer.on({
-              mouseover: e => { if (s !== selected) e.target.setStyle({weight: 2, color: '#333'}); e.target.bringToFront(); bringSelectedFront(); },
-              mouseout: e => { statesLayer.resetStyle(e.target); },
+              mouseover: e => {
+                hovered = s;
+                if (s !== selected) e.target.setStyle({weight: 2, color: '#333'});
+                hoverTip.setContent(tipHtml(s)).setLatLng(e.latlng);
+                if (!map.hasLayer(hoverTip)) hoverTip.addTo(map);
+              },
+              mousemove: e => { if (hovered === s) hoverTip.setLatLng(e.latlng); },
+              mouseout: e => {
+                statesLayer.resetStyle(e.target);
+                if (hovered === s) { hovered = null; map.removeLayer(hoverTip); }
+              },
               click: () => selectState(s)
             });
           }
@@ -488,7 +500,7 @@
     function restyle() {
       if (!statesLayer) return;
       statesLayer.eachLayer(l => l.setStyle(baseStyle(l.feature.properties.name)));
-      bringSelectedFront();
+      if (hovered && map.hasLayer(hoverTip)) hoverTip.setContent(tipHtml(hovered));
     }
 
     /* ---------------- Legend ---------------- */
@@ -618,7 +630,7 @@
         : 'Median home value as a share of the US median';
       restyle(); renderLegend(); renderCard(); renderChart(); renderTable();
     }
-    function selectState(s) { selected = s; update(); }
+    function selectState(s) { selected = s; update(); bringSelectedFront(); }
 
     function setMode(m) {
       mode = m;
