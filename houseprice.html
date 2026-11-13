@@ -1,340 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>US State Housing Price Trends (1940–2000) — Ayhan Kosan</title>
-  <meta name="description" content="Interactive map of US state median home values from 1940 to 2000.">
-    <!-- Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <!-- D3.js -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <!-- TopoJSON -->
-    <script src="https://unpkg.com/topojson@3.0.2/dist/topojson.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>US State Median Home Values (1940–2000) — Ayhan Kosan</title>
+  <meta name="description" content="Interactive map of US state median home values from the decennial census, 1940 to 2000, in constant 2000 dollars.">
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- D3.js -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Jost:wght@400;500;600;700&amp;display=swap">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="theme-bauhaus.css">
   <script>document.documentElement.classList.add('js');</script>
   <script src="site.js" defer></script>
-    <style>
-        #map-container {
-            position: relative;
-            height: 500px; /* Reduced height */
-            border-radius: 6px; /* Reduced border radius */
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            background-color: #fff;
-        }
-        
-        #map {
-            height: 100%;
-            width: 100%;
-        }
-        
-        .controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 15px; /* Reduced margin */
-            gap: 10px; /* Reduced gap */
-        }
-        
-        .year-slider-container {
-            flex-grow: 1;
-            max-width: 400px; /* Reduced max-width */
-        }
-        
-        #year-slider {
-            width: 100%;
-            background: #ddd;
-            height: 6px; /* Reduced height */
-            outline: none;
-            -webkit-appearance: none;
-            border-radius: 3px; /* Reduced border radius */
-        }
-        
-        #year-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 16px; /* Reduced width */
-            height: 16px; /* Reduced height */
-            background: var(--primary-color);
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        
-        #year-display {
-            font-size: 1rem; /* Reduced font size */
-            font-weight: bold;
-            min-width: 80px; /* Reduced min-width */
-            text-align: center;
-            color: var(--dark-color);
-        }
-        
-        .legend {
-            position: absolute;
-            bottom: 15px; /* Reduced position */
-            right: 15px; /* Reduced position */
-            background: rgba(255, 255, 255, 0.9);
-            padding: 8px; /* Reduced padding */
-            border-radius: 4px; /* Reduced border radius */
-            z-index: 500; /* Lower than navbar's z-index of 1000 */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow */
-            color: var(--text-color);
-            font-size: 0.85rem; /* Reduced font size */
-            max-height: calc(100vh - 100px); /* Prevent overlap with navbar */
-            overflow-y: auto; /* Allow scrolling if content is too tall */
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            margin: 4px 0; /* Reduced margin */
-        }
-        
-        .legend-color {
-            width: 16px; /* Reduced width */
-            height: 16px; /* Reduced height */
-            margin-right: 6px; /* Reduced margin */
-            border-radius: 2px; /* Reduced border radius */
-        }
-        
-        .info-panel {
-            position: absolute;
-            top: 15px; /* Reduced position */
-            left: 15px; /* Reduced position */
-            background: rgba(255, 255, 255, 0.9);
-            padding: 12px; /* Reduced padding */
-            border-radius: 4px; /* Reduced border radius */
-            z-index: 1000;
-            max-width: 250px; /* Reduced max-width */
-            display: none;
-            box-shadow: var(--shadow);
-            color: var(--text-color);
-            font-size: 0.9rem; /* Reduced font size */
-        }
-        .info-panel h3 {
-            margin-top: 0;
-            margin-bottom: 8px; /* Reduced margin */
-            color: var(--dark-color);
-            font-size: 1.1rem; /* Reduced font size */
-        }
-        
-        .play-button {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px 16px; /* Reduced padding */
-            border-radius: 3px; /* Reduced border radius */
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-            font-size: 0.9rem; /* Reduced font size */
-        }
-        
-        .play-button:hover {
-            background-color: #3a57d7;
-        }
-        
-        .state-label {
-            background: transparent;
-            border: none;
-            color: var(--text-color);
-            font-size: 8px; /* Reduced font size */
-            font-weight: bold;
-            text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
-            white-space: nowrap;
-            pointer-events: none;
-        }
-        
-        .chart-container {
-            margin-top: 25px; /* Reduced margin */
-            height: 250px; /* Reduced height */
-            background: #fff;
-            border-radius: 6px; /* Reduced border radius */
-            padding: 15px; /* Reduced padding */
-            box-shadow: var(--shadow);
-        }
-        
-        .tooltip {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.95);
-            color: var(--text-color);
-            padding: 8px; /* Reduced padding */
-            border-radius: 3px; /* Reduced border radius */
-            pointer-events: none;
-            font-size: 11px; /* Reduced font size */
-            z-index: 1500;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-        }
-        
-        .median-price-info {
-            border-top: 1px solid var(--border-color);
-            margin-top: 8px; /* Reduced margin */
-            padding-top: 8px; /* Reduced padding */
-            font-weight: bold;
-            color: var(--dark-color);
-            font-size: 0.85rem; /* Reduced font size */
-        }
-        
-        .data-source {
-            text-align: center;
-            margin-top: 8px; /* Reduced margin */
-            font-size: 0.7rem; /* Reduced font size */
-            color: var(--secondary-color);
-        }
-        
-        /* Click hint */
-        .click-hint {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(74, 108, 247, 0.9);
-            color: white;
-            padding: 12px 16px; /* Reduced padding */
-            border-radius: 6px; /* Reduced border radius */
-            font-weight: bold;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2); /* Reduced shadow */
-            z-index: 1200;
-            display: flex;
-            align-items: center;
-            gap: 8px; /* Reduced gap */
-            animation: pulse 2s infinite;
-            pointer-events: none;
-            font-size: 0.9rem; /* Reduced font size */
-        }
-        
-        .click-hint-arrow {
-            font-size: 20px; /* Reduced font size */
-            animation: bounce 1s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(74, 108, 247, 0.7); }
-            70% { box-shadow: 0 0 0 8px rgba(74, 108, 247, 0); } /* Reduced size */
-            100% { box-shadow: 0 0 0 0 rgba(74, 108, 247, 0); }
-        }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-4px); } /* Reduced movement */
-        }
-        
-        /* Accessibility and responsive adjustments */
-        #map-container {
-            height: clamp(360px, 62vh, 560px);
-            border: 1px solid var(--border-color);
-        }
+  <style>
+    /* ---------- Map frame ---------- */
+    .hv-map-wrap {
+      position: relative;
+      height: clamp(380px, 64vh, 600px);
+      border: 2px solid var(--black, #111);
+      background: #f4f3ef;
+    }
+    #map { height: 100%; width: 100%; background: #e9eef2; font-family: var(--font-sans); }
+    .leaflet-container a { color: var(--blue, #1d4ea0); }
 
-        .controls {
-            flex-wrap: wrap;
-            gap: 0.75rem 1rem;
-            margin-top: 1rem;
-        }
+    /* Map overlay title (top-left) */
+    .hv-map-title {
+      position: absolute; top: 12px; left: 12px; z-index: 500;
+      background: rgba(255,255,255,0.94); padding: 0.55rem 0.8rem;
+      border-left: 6px solid var(--red, #c8261a);
+      pointer-events: none; max-width: 60%;
+    }
+    .hv-map-title .yr { font-size: 2rem; font-weight: 700; line-height: 1; color: #111; }
+    .hv-map-title .sub { font-size: 0.8rem; color: #3b3b3b; margin-top: 0.2rem; }
 
-        .controls label {
-            font-weight: 600;
-        }
+    /* Legend (bottom-left) */
+    .hv-legend {
+      position: absolute; left: 12px; bottom: 28px; z-index: 500;
+      background: rgba(255,255,255,0.96); padding: 0.65rem 0.8rem;
+      border: 1px solid #ddd7c9; font-size: 0.8rem; color: #111; min-width: 190px;
+    }
+    .hv-legend h3 { font-size: 0.82rem; margin: 0 0 0.15rem; font-weight: 600; letter-spacing: 0; }
+    .hv-legend .unit { color: #595959; font-size: 0.72rem; margin: 0 0 0.45rem; }
+    .hv-legend-row { display: grid; grid-template-columns: 18px 1fr auto; gap: 0.5rem; align-items: center; margin: 2px 0; }
+    .hv-legend-row .sw { width: 18px; height: 12px; border: 1px solid rgba(0,0,0,0.25); }
+    .hv-legend-row .n { color: #595959; font-variant-numeric: tabular-nums; font-size: 0.72rem; }
+    .hv-legend-row.nodata .sw {
+      background: repeating-linear-gradient(45deg, #d4d4d4 0 3px, #f0f0f0 3px 6px);
+    }
+    .hv-legend .us { border-top: 1px solid #ddd7c9; margin-top: 0.45rem; padding-top: 0.4rem; font-weight: 600; }
 
-        .play-button {
-            min-height: 44px;
-            min-width: 88px;
-            padding: 0.5rem 1.25rem;
-            border-radius: 999px;
-            font-size: 1rem;
-        }
+    /* Region jump buttons (custom Leaflet control) */
+    .hv-regions { display: flex; flex-direction: column; background: #fff; border: 2px solid rgba(0,0,0,0.2); }
+    .hv-regions button {
+      font: 600 0.72rem var(--font-sans); background: #fff; border: 0; border-bottom: 1px solid #ddd;
+      padding: 0.35rem 0.55rem; cursor: pointer; text-align: left; color: #111;
+    }
+    .hv-regions button:last-child { border-bottom: 0; }
+    .hv-regions button:hover, .hv-regions button:focus-visible { background: #f5f2ea; }
 
-        .play-button {
-            color: #0a1020;
-        }
+    /* Hover tooltip */
+    .leaflet-tooltip.hv-tip {
+      font-family: var(--font-sans); font-size: 0.8rem; border-radius: 0; border: 1px solid #111;
+      box-shadow: none; padding: 0.4rem 0.55rem; color: #111;
+    }
+    .hv-tip strong { display: block; font-size: 0.85rem; }
 
-        .play-button:hover {
-            background-color: var(--primary-hover);
-        }
+    /* ---------- Controls ---------- */
+    .hv-controls {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem;
+      margin-top: 1rem; padding: 0.75rem 0; border-bottom: 1px solid #ddd7c9;
+    }
+    .hv-seg { display: inline-flex; border: 2px solid #111; }
+    .hv-seg button {
+      font: 600 0.85rem var(--font-sans); padding: 0.5rem 0.9rem; min-height: 40px;
+      background: #fff; color: #111; border: 0; cursor: pointer;
+    }
+    .hv-seg button + button { border-left: 2px solid #111; }
+    .hv-seg button[aria-pressed="true"] { background: #111; color: #fff; }
+    .hv-play {
+      font: 600 0.9rem var(--font-sans); min-height: 40px; min-width: 88px; padding: 0.5rem 1rem;
+      background: var(--red, #c8261a); color: #fff; border: 0; cursor: pointer;
+    }
+    .hv-play:hover { background: #a51e14; }
+    .hv-slider { flex: 1 1 280px; max-width: 520px; }
+    .hv-slider input { width: 100%; accent-color: #111; margin: 0; }
+    .hv-ticks { display: flex; justify-content: space-between; font-size: 0.75rem; color: #3b3b3b; margin-top: 0.2rem; font-variant-numeric: tabular-nums; }
 
-        #year-display {
-            color: var(--text);
-        }
+    /* ---------- State detail ---------- */
+    .hv-detail { display: grid; grid-template-columns: minmax(240px, 300px) 1fr; gap: 1.25rem; margin-top: 1.25rem; }
+    .hv-detail > * { min-width: 0; }
+    .hv-card { border: 2px solid #111; padding: 1rem 1.1rem; background: #fff; }
+    .hv-card h3 { margin: 0 0 0.1rem; font-size: 1.35rem; }
+    .hv-card .hint { color: #595959; font-size: 0.8rem; margin: 0 0 0.8rem; }
+    .hv-card dl { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 0.45rem 0.75rem; font-size: 0.9rem; }
+    .hv-card dt { color: #3b3b3b; }
+    .hv-card dd { margin: 0; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+    .hv-card .big { grid-column: 1 / -1; font-size: 1.9rem; font-weight: 700; line-height: 1.1; margin-bottom: 0.2rem; }
+    .up { color: #a51e14; } .down { color: #1d4ea0; }
+    .hv-chart { border: 1px solid #ddd7c9; background: #fff; padding: 0.5rem; min-height: 300px; position: relative; }
+    .hv-chart svg { display: block; width: 100%; height: 300px; }
+    .hv-chart-tip {
+      position: absolute; pointer-events: none; background: #fff; border: 1px solid #111;
+      padding: 0.35rem 0.5rem; font-size: 0.78rem; opacity: 0; transition: opacity 0.15s; white-space: nowrap;
+    }
 
-        .data-source {
-            color: var(--text-muted);
-        }
+    /* ---------- About the data ---------- */
+    .hv-about { margin-top: 2rem; max-width: 820px; }
+    .hv-about dl { display: grid; grid-template-columns: 170px 1fr; gap: 0.5rem 1rem; font-size: 0.92rem; }
+    .hv-about dt { font-weight: 600; }
+    .hv-about dd { margin: 0; color: #3b3b3b; }
+    .hv-table-wrap { margin-top: 1rem; overflow-x: auto; }
+    .hv-table { border-collapse: collapse; font-size: 0.85rem; width: 100%; font-variant-numeric: tabular-nums; }
+    .hv-table th, .hv-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid #ddd7c9; text-align: right; }
+    .hv-table th:first-child, .hv-table td:first-child { text-align: left; }
+    .hv-table thead th { border-bottom: 2px solid #111; }
+    .hv-table tfoot td { font-weight: 700; border-top: 2px solid #111; }
+    details summary { cursor: pointer; font-weight: 600; margin-top: 1rem; }
+    .data-source { font-size: 0.8125rem; color: #3b3b3b; margin-top: 0.75rem; }
 
-        #year-slider {
-            height: 8px;
-            accent-color: var(--primary-color);
-        }
-
-        #year-slider::-webkit-slider-thumb {
-            width: 24px;
-            height: 24px;
-        }
-
-        #year-slider::-moz-range-thumb {
-            width: 24px;
-            height: 24px;
-            border: 0;
-            border-radius: 50%;
-            background: var(--primary-color);
-        }
-
-        .click-hint {
-            background: rgba(40, 63, 168, 0.95);
-        }
-
-        .data-source {
-            font-size: 0.8125rem;
-            margin-top: 0.75rem;
-        }
-
-        .tooltip {
-            font-size: 0.8125rem;
-        }
-
-        .chart-container {
-            height: auto;
-            min-height: 250px;
-            border: 1px solid var(--border-color);
-            overflow-x: auto;
-        }
-
-        @media (max-width: 640px) {
-            #map-container {
-                height: auto;
-                overflow: visible;
-                box-shadow: none;
-                border: 0;
-                background: transparent;
-            }
-
-            #map {
-                height: 340px;
-                border-radius: 12px;
-                border: 1px solid var(--border-color);
-                overflow: hidden;
-            }
-
-            .legend,
-            .info-panel {
-                position: static;
-                max-width: none !important;
-                margin-top: 0.75rem;
-                box-shadow: none;
-                border: 1px solid var(--border-color);
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .click-hint,
-            .click-hint-arrow {
-                animation: none;
-            }
-        }
-    </style>
+    @media (max-width: 760px) {
+      .hv-detail { grid-template-columns: 1fr; }
+      .hv-about dl { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .hv-map-wrap { height: auto; border: 0; background: transparent; }
+      #map { height: 360px; border: 2px solid #111; }
+      .hv-legend { position: static; margin-top: 0.75rem; }
+      .hv-map-title { max-width: 75%; }
+      .hv-map-title { top: 8px; left: 8px; padding: 0.35rem 0.6rem; }
+      .hv-map-title .yr { font-size: 1.3rem; }
+      .hv-map-title .sub { font-size: 0.7rem; }
+    }
+  </style>
 </head>
 <body id="top">
   <a class="skip-link" href="#main">Skip to main content</a>
@@ -363,110 +165,97 @@
           <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
           All projects
         </a>
-        <h1 class="page-title">US State Housing Price Trends: Interactive Visualization of Six Decades of Market Evolution</h1>
+        <h1 class="page-title">Six Decades of US Home Values: State Medians from the Census, 1940–2000</h1>
         <div class="project-info">
           <div class="project-category"><span class="meta-label">Category</span> Data Visualization, Web-Mapping, JavaScript</div>
           <div class="project-date"><span class="meta-label">Date</span> 2025</div>
         </div>
 
         <div class="map-page-intro project-description">
-          <h2>US State Housing Price Trends (1940–2000)</h2>
-          <p>This interactive map visualizes housing price trends across the United States from 1940 to 2000, revealing patterns of growth and affordability challenges over six decades. This is an interactive choropleth map where you can click on any state to view detailed housing price statistics. Corresponding data visualizations and trend analysis appear below the map when a state is selected. The visualization shows how median home values adjusted for inflation nearly quadrupled over this 60-year period, rising from $30,600 in 1940 to $119,600 in 2000 nationwide.</p>
+          <h2>Median home value by state, 1940–2000</h2>
+          <p>Every decennial census since 1940 has asked homeowners what their house is worth. This map shows the state medians of those answers, adjusted for inflation to constant 2000 dollars, so the decades compare directly. Nationally the median value of a single-family home nearly quadrupled, from $30,600 in 1940 to $119,600 in 2000.</p>
+          <p>Switch between <strong>Value</strong>, which shows the dollar amounts on one fixed scale for every decade, and <strong>Compared with US median</strong>, which shows each state as a share of the national median for that year. Use the slider or Play to step through the decades. Hover over a state for its figures, and select one to see its full history below the map.</p>
         </div>
+
+        <h2 class="visually-hidden">Interactive map</h2>
+        <div class="hv-map-wrap">
+          <div id="map" role="region" aria-label="Choropleth map of median home value by US state. Use the controls below the map to change the year and the view; the table under About the data lists the same values."></div>
+          <div class="hv-map-title" aria-hidden="true">
+            <div class="yr" id="map-year">2000</div>
+            <div class="sub" id="map-sub">Median home value, 2000 dollars</div>
+          </div>
+          <div class="hv-legend" id="legend" aria-live="polite"></div>
+        </div>
+
+        <div class="hv-controls">
+          <div class="hv-seg" role="group" aria-label="Map view">
+            <button type="button" id="mode-value" aria-pressed="true">Value</button>
+            <button type="button" id="mode-ratio" aria-pressed="false">Compared with US median</button>
+          </div>
+          <button id="play-button" class="hv-play" type="button" aria-controls="year-slider">Play</button>
+          <div class="hv-slider">
+            <label for="year-slider" class="visually-hidden">Census year</label>
+            <input type="range" id="year-slider" min="1940" max="2000" step="10" value="2000" list="decades">
+            <datalist id="decades">
+              <option value="1940"></option><option value="1950"></option><option value="1960"></option>
+              <option value="1970"></option><option value="1980"></option><option value="1990"></option><option value="2000"></option>
+            </datalist>
+            <div class="hv-ticks" aria-hidden="true"><span>1940</span><span>1950</span><span>1960</span><span>1970</span><span>1980</span><span>1990</span><span>2000</span></div>
+          </div>
+        </div>
+
+        <section class="hv-detail" aria-label="Selected state">
+          <div class="hv-card" id="state-card" aria-live="polite"></div>
+          <div class="hv-chart" id="price-history-chart"></div>
+        </section>
+
+        <section class="hv-about" aria-labelledby="about-data">
+          <h2 id="about-data">About the data</h2>
+          <dl>
+            <dt>Measure</dt>
+            <dd>Median value of owner-occupied single-family homes on less than 10 acres, with no business or medical office on the property. Half the homes in a state were worth more and half less.</dd>
+            <dt>What "value" means</dt>
+            <dd>The value is the owner's own estimate of what the house and lot would sell for, given on the census questionnaire. It is not a recorded sale price, and it covers all owned homes, not only those that sold that year.</dd>
+            <dt>Dollars</dt>
+            <dd>Every figure is in constant 2000 dollars, adjusted for inflation by the Census Bureau. A rising line means home values grew faster than general prices.</dd>
+            <dt>Coverage</dt>
+            <dd>50 states and the District of Columbia, which the Census Bureau treats as a state in these tables. Alaska and Hawaii have no 1940 value: both were territories and not part of the 1940 state tables. Puerto Rico is not included.</dd>
+            <dt>Color classes</dt>
+            <dd><em>Value</em> uses the same eight fixed classes for every decade, so a color means the same dollar range in 1940 as in 2000. <em>Compared with US median</em> divides each state's value by that year's national median; values near 100% are white, below the median are blue and above it are red.</dd>
+            <dt>Caveats</dt>
+            <dd>Owner estimates tend to lag the market when prices turn. The 1990 figures caught the end of a late-1980s boom in the Northeast and California, which is why several of those states show lower values in 2000 than in 1990. The basemap uses Web Mercator, which enlarges northern states, so judge states by color and not by size.</dd>
+          </dl>
+
+          <details>
+            <summary>All states for <span id="table-year">2000</span>, ranked by value</summary>
+            <div class="hv-table-wrap">
+              <table class="hv-table" id="data-table">
+                <caption class="visually-hidden">Median home value by state for the selected census year, in 2000 dollars</caption>
+                <thead><tr><th scope="col">Rank</th><th scope="col" style="text-align:left">State</th><th scope="col">Median value</th><th scope="col">% of US median</th><th scope="col">Change from previous census</th></tr></thead>
+                <tbody></tbody>
+                <tfoot></tfoot>
+              </table>
+            </div>
+          </details>
+
+          <p class="data-source">Source: U.S. Census Bureau, <a href="https://www.census.gov/data/tables/time-series/dec/coh-values.html">Historical Census of Housing Tables: Home Values</a>, decennial censuses 1940–2000. Basemap © OpenStreetMap contributors, © CARTO. State boundaries: PublicaMundi US states GeoJSON.</p>
+        </section>
 
         <section class="callout" aria-labelledby="tech-context">
           <h2 id="tech-context">Technical Context</h2>
-          <p>The following technologies were used to create this visualization:</p>
           <ul>
-            <li>Leaflet.js and GeoJSON for interactive mapping</li>
-            <li>D3.js for data visualization of U.S. Census Bureau Historical Census of Housing Tables</li>
-            <li>JavaScript for time-series analysis and regional comparison</li>
-            <li>CSS-styled blue-scale choropleth for state price differentiation</li>
-            <li>JavaScript event listeners for user interaction</li>
-            <li>Promises for asynchronous data operations</li>
-            <li>HTML/CSS components for data display (tooltips, panels, legends)</li>
+            <li>Leaflet with a muted CARTO Positron basemap; place labels sit on their own pane above the state colors so they stay readable</li>
+            <li>Fixed, manually defined class breaks with a ColorBrewer yellow–orange–red ramp, so colors stay comparable across all seven censuses</li>
+            <li>A second, diverging blue–red view normalized to the national median for each year, which takes out nationwide growth and shows the relative position of each state</li>
+            <li>Legend built from the same break definitions as the map, with a count of states per class for the selected year</li>
+            <li>D3.js line chart of the selected state against the national median, with rank, share of median and decade change computed in the browser</li>
+            <li>Keyboard-accessible controls and a ranked data table as a non-visual alternative to the map</li>
           </ul>
-          <p>The architecture follows a modular approach with separate functions for data fetching, map updates, chart rendering and color calculations. The data shows interesting regional patterns, with the District of Columbia having the highest median home values from 1940 to 1950, followed by Hawaii from 1960 onward. Southern states like Arkansas, Mississippi and Oklahoma consistently showed the lowest median home values throughout this period.</p>
+          <p>Some regional patterns: the District of Columbia had the highest median value in 1940 and 1950, and Hawaii from 1960 on. Arkansas, Mississippi and Oklahoma were among the lowest throughout. Western states such as Arizona, Nevada and Utah moved from below the national median in 1940 to above it by 2000.</p>
         </section>
-
-        <h2 class="visually-hidden">Interactive map</h2>
-        <!-- Main map container with map and legend -->
-        <div id="map-container">
-            <div id="map" role="region" aria-label="Choropleth map of median home values by US state. Use the year slider below to change the year; select a state to see its details."></div>
-            <!-- Click hint tooltip -->
-            <div class="click-hint" id="click-hint" aria-hidden="true">
-                <span>Click on a state to see details</span>
-                <span class="click-hint-arrow" aria-hidden="true">↓</span>
-            </div>
-            <!-- Color-coded legend showing price ranges -->
-            <div class="legend" style="max-width: 180px;">
-                <h3 class="legend-title" style="font-size:0.95rem;margin:0 0 0.35rem;">Housing price legend</h3>
-                <p>Colors represent median home prices by state:</p>
-                <div class="legend-item">
-                    <div class="legend-color" aria-hidden="true" style="background-color: #084594;"></div>
-                    <span>$200,000+</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" aria-hidden="true" style="background-color: #2171b5;"></div>
-                    <span>$150,000-$200,000</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" aria-hidden="true" style="background-color: #4292c6;"></div>
-                    <span>$120,000-$150,000</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" aria-hidden="true" style="background-color: #6baed6;"></div>
-                    <span>$100,000-$120,000</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" aria-hidden="true" style="background-color: #9ecae1;"></div>
-                    <span>$80,000-$100,000</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" aria-hidden="true" style="background-color: #c6dbef;"></div>
-                    <span>$60,000-$80,000</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" aria-hidden="true" style="background-color: #deebf7;"></div>
-                    <span>$40,000-$60,000</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" aria-hidden="true" style="background-color: #f7fbff;"></div>
-                    <span>$20,000-$40,000</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" aria-hidden="true" style="background-color: #ffffff;"></div>
-                    <span>Under $20,000</span>
-                </div>
-                <div class="median-price-info" id="median-price-display" aria-live="polite">
-                    National Median: $0
-                </div>
-            </div>
-            <!-- Information panel for selected state details -->
-            <div class="info-panel" id="state-info" aria-live="polite">
-                <h3 id="state-name"></h3>
-                <p id="price-info"></p>
-                <p id="change-info"></p>
-            </div>
-        </div>
-        
-        <!-- Controls for time-based animation -->
-        <div class="controls">
-            <button id="play-button" class="play-button" type="button" aria-controls="year-slider">Play</button>
-            <div class="year-slider-container">
-                <label for="year-slider" class="visually-hidden">Census year</label>
-                <input type="range" id="year-slider" min="1940" max="2000" step="10" value="1940" aria-describedby="year-display">
-            </div>
-            <output id="year-display" for="year-slider" aria-live="polite">1940</output>
-        </div>
-        
-        <!-- Container for price history chart -->
-        <div class="chart-container" id="price-history-chart"></div>
-        <p class="data-source">Data source: U.S. Census Bureau Historical Census of Housing Tables - Home Values (1940-2000)</p>
       </div>
     </article>
   </main>
-
 
   <footer class="site-footer">
     <div class="container">
@@ -482,702 +271,390 @@
     </div>
   </footer>
 
-    <script>
-        // Initialize the Leaflet map centered on the United States
-        const map = L.map('map', {
-            zoomControl: false,
-            attributionControl: false
-        }).setView([39.8283, -98.5795], 4); // Center coordinates of US
-        
-        // Add a minimalist light basemap inspired by NYT style
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-            subdomains: 'abcd',
-            maxZoom: 18
+  <script>
+  (function () {
+    'use strict';
+
+    /* ---------------- Data ---------------- */
+    // Median value of specified owner-occupied units, constant 2000 dollars.
+    // Source: U.S. Census Bureau, Historical Census of Housing Tables: Home Values.
+    const YEARS = [1940, 1950, 1960, 1970, 1980, 1990, 2000];
+    const US = {1940: 30600, 1950: 44600, 1960: 58600, 1970: 65300, 1980: 93400, 1990: 101100, 2000: 119600};
+    const V = {
+      "Alabama": [16800, 27100, 42400, 46900, 67100, 68600, 85100],
+      "Alaska": [null, 21100, 44800, 87200, 151000, 120600, 144200],
+      "Arizona": [14600, 36000, 54700, 62600, 108500, 102300, 121300],
+      "Arkansas": [11400, 24800, 33000, 40300, 61600, 59200, 72800],
+      "California": [36700, 57900, 74400, 88700, 167300, 249800, 211500],
+      "Colorado": [21800, 43300, 60600, 66400, 126900, 105700, 166600],
+      "Connecticut": [48000, 71900, 82300, 97900, 129900, 227200, 166900],
+      "Delaware": [43300, 55000, 61100, 65700, 87900, 127900, 130400],
+      "District of Columbia": [78800, 87800, 75900, 81800, 136200, 158300, 157200],
+      "Florida": [23100, 40100, 58100, 57600, 89300, 98500, 105500],
+      "Georgia": [20400, 31700, 46800, 56100, 73000, 91100, 111200],
+      "Hawaii": [null, 74400, 103000, 134800, 233800, 313400, 272700],
+      "Idaho": [16700, 35500, 52200, 54200, 90300, 74400, 106300],
+      "Illinois": [34100, 52400, 72400, 76000, 104500, 103400, 130800],
+      "Indiana": [25000, 37700, 50300, 53000, 73600, 68900, 94300],
+      "Iowa": [23400, 38300, 48800, 53400, 80400, 58600, 82500],
+      "Kansas": [18000, 33100, 45800, 46500, 74800, 66700, 83500],
+      "Kentucky": [21600, 32000, 43400, 48400, 67700, 64500, 86700],
+      "Louisiana": [14700, 31100, 52700, 56100, 85100, 74700, 85000],
+      "Maine": [20900, 29400, 43400, 49200, 75000, 111700, 98700],
+      "Maryland": [31500, 48700, 58600, 71800, 115400, 148800, 146000],
+      "Massachusetts": [39900, 55400, 68000, 79100, 95800, 208000, 185700],
+      "Michigan": [29800, 45400, 59100, 67200, 77200, 77400, 115600],
+      "Minnesota": [31500, 47300, 63100, 69100, 105100, 94500, 122400],
+      "Mississippi": [12400, 25200, 38900, 43000, 62200, 58300, 71400],
+      "Missouri": [24900, 38800, 53700, 55300, 72600, 76400, 89900],
+      "Montana": [17200, 35100, 53700, 53800, 92000, 72300, 99500],
+      "Nebraska": [22400, 35900, 46300, 47600, 75200, 64400, 88000],
+      "Nevada": [20700, 53700, 74900, 86000, 136000, 122300, 142000],
+      "New Hampshire": [26100, 37600, 52700, 63000, 95000, 165300, 133300],
+      "New Jersey": [47100, 63100, 76900, 89900, 119200, 207400, 170800],
+      "New Mexico": [6800, 34500, 52700, 49900, 89700, 89600, 108100],
+      "New York": [45700, 61500, 75400, 86400, 90300, 168100, 148700],
+      "North Carolina": [18800, 29700, 39400, 49200, 71300, 84100, 108300],
+      "North Dakota": [16900, 32700, 48300, 49900, 86900, 64900, 74400],
+      "Ohio": [35500, 50300, 66000, 67600, 88900, 81100, 103700],
+      "Oklahoma": [13500, 31700, 38900, 42600, 70500, 61500, 70700],
+      "Oregon": [24400, 41500, 51700, 59100, 112600, 85700, 152100],
+      "Pennsylvania": [33400, 42400, 50300, 52200, 77400, 89100, 97000],
+      "Rhode Island": [40000, 59200, 60600, 69900, 92600, 170600, 133000],
+      "South Carolina": [22300, 31000, 37000, 49900, 69500, 78100, 94900],
+      "South Dakota": [16800, 32800, 43400, 43800, 72400, 57700, 79600],
+      "Tennessee": [19000, 31900, 40900, 48000, 70500, 74600, 93000],
+      "Texas": [17600, 35200, 43400, 46100, 77400, 76100, 82500],
+      "Utah": [24100, 44900, 62100, 64500, 113400, 88000, 146100],
+      "Vermont": [29500, 38000, 47800, 63000, 83500, 122000, 111500],
+      "Virginia": [27400, 39900, 53200, 65700, 95000, 116300, 125400],
+      "Washington": [24500, 43400, 57700, 71100, 118600, 119300, 168300],
+      "West Virginia": [24500, 33200, 37400, 43400, 76200, 61200, 72800],
+      "Wisconsin": [33600, 48000, 62100, 66400, 96200, 79900, 112200],
+      "Wyoming": [22600, 41300, 60600, 58800, 118400, 78700, 96600]
+    };
+    const STATES = Object.keys(V);
+    const val = (s, y) => (V[s] ? V[s][YEARS.indexOf(y)] : undefined) ?? null;
+
+    /* ---------------- Classification ---------------- */
+    // Fixed breaks shared by every decade (ColorBrewer YlOrRd, lightest class dropped for basemap contrast).
+    const VALUE_CLASSES = [
+      {min: 0,      max: 40000,    color: '#ffeda0', label: 'Under $40k'},
+      {min: 40000,  max: 60000,    color: '#fed976', label: '$40k – $60k'},
+      {min: 60000,  max: 80000,    color: '#feb24c', label: '$60k – $80k'},
+      {min: 80000,  max: 100000,   color: '#fd8d3c', label: '$80k – $100k'},
+      {min: 100000, max: 125000,   color: '#fc4e2a', label: '$100k – $125k'},
+      {min: 125000, max: 150000,   color: '#e31a1c', label: '$125k – $150k'},
+      {min: 150000, max: 200000,   color: '#bd0026', label: '$150k – $200k'},
+      {min: 200000, max: Infinity, color: '#800026', label: '$200k and over'}
+    ];
+    // Diverging classes around 100% of the national median (ColorBrewer RdBu, colorblind-safe).
+    const RATIO_CLASSES = [
+      {min: 0,    max: 0.70,     color: '#2166ac', label: 'Under 70%'},
+      {min: 0.70, max: 0.85,     color: '#67a9cf', label: '70% – 85%'},
+      {min: 0.85, max: 0.95,     color: '#d1e5f0', label: '85% – 95%'},
+      {min: 0.95, max: 1.05,     color: '#f7f7f7', label: '95% – 105%'},
+      {min: 1.05, max: 1.20,     color: '#fddbc7', label: '105% – 120%'},
+      {min: 1.20, max: 1.50,     color: '#ef8a62', label: '120% – 150%'},
+      {min: 1.50, max: Infinity, color: '#b2182b', label: '150% and over'}
+    ];
+    const NODATA = '#dcdcdc';
+
+    const fmt$ = v => '$' + d3.format(',')(v);
+    const fmtK = v => '$' + d3.format(',')(Math.round(v / 1000)) + 'k';
+    const fmtPct = v => Math.round(v * 100) + '%';
+    const fmtChg = v => (v >= 0 ? '+' : '−') + Math.abs(v * 100).toFixed(1) + '%';
+
+    let mode = 'value';
+    let year = 2000;
+    let selected = 'California';
+    let playing = false, timer = null;
+
+    const metric = (s, y) => {
+      const v = val(s, y);
+      if (v == null) return null;
+      return mode === 'value' ? v : v / US[y];
+    };
+    const classes = () => (mode === 'value' ? VALUE_CLASSES : RATIO_CLASSES);
+    const classOf = m => classes().find(c => m >= c.min && m < c.max);
+    const colorOf = m => (m == null ? NODATA : classOf(m).color);
+
+    function rankOf(s, y) {
+      const ranked = STATES.filter(x => val(x, y) != null).sort((a, b) => val(b, y) - val(a, y));
+      return {rank: ranked.indexOf(s) + 1, of: ranked.length};
+    }
+    function prevChange(s, y) {
+      const i = YEARS.indexOf(y);
+      if (i < 1) return null;
+      const a = val(s, YEARS[i - 1]), b = val(s, y);
+      return a && b ? (b - a) / a : null;
+    }
+
+    /* ---------------- Map ---------------- */
+    const LOWER48 = [[24.3, -125.0], [49.5, -66.9]];
+    const map = L.map('map', {
+      zoomControl: false, scrollWheelZoom: false, zoomSnap: 0.25, minZoom: 2, maxZoom: 8,
+      attributionControl: true
+    });
+    map.attributionControl.setPrefix(false);
+    L.control.zoom({position: 'topright'}).addTo(map);
+
+    const fitLower48 = () => {
+      const narrow = map.getSize().x < 640;
+      // Leaves room on the left for the title and legend overlays on wide screens.
+      const legendW = (document.getElementById('legend') || {}).offsetWidth || 220;
+      map.fitBounds(LOWER48, narrow ? {paddingTopLeft: [8, 64], paddingBottomRight: [8, 8]} : {paddingTopLeft: [legendW + 24, 40], paddingBottomRight: [80, 10]});
+    };
+    fitLower48();
+
+    // Muted base without labels, states in the overlay pane, labels on their own pane above.
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a> | Data: US Census Bureau',
+      subdomains: 'abcd', maxZoom: 19
+    }).addTo(map);
+    map.createPane('labels');
+    map.getPane('labels').style.zIndex = 650;
+    map.getPane('labels').style.pointerEvents = 'none';
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
+      subdomains: 'abcd', maxZoom: 19, pane: 'labels', opacity: 0.85
+    }).addTo(map);
+
+    // Region shortcuts for Alaska and Hawaii, which sit outside the lower-48 view.
+    const Regions = L.Control.extend({
+      options: {position: 'topright'},
+      onAdd: function () {
+        const div = L.DomUtil.create('div', 'hv-regions leaflet-bar');
+        const items = [
+          ['Lower 48', fitLower48],
+          ['Alaska', () => map.fitBounds([[51, -170], [71.5, -129]])],
+          ['Hawaii', () => map.fitBounds([[18.8, -160.5], [22.4, -154.7]])]
+        ];
+        items.forEach(([label, fn]) => {
+          const b = L.DomUtil.create('button', '', div);
+          b.type = 'button'; b.textContent = label;
+          b.addEventListener('click', fn);
+        });
+        L.DomEvent.disableClickPropagation(div);
+        return div;
+      }
+    });
+    map.addControl(new Regions());
+
+    let statesLayer = null;
+    const baseStyle = s => ({
+      fillColor: colorOf(metric(s, year)),
+      fillOpacity: 0.88,
+      color: s === selected ? '#111' : '#ffffff',
+      weight: s === selected ? 2.5 : 0.8,
+      opacity: 1
+    });
+
+    function tipHtml(s) {
+      const v = val(s, year);
+      if (v == null) return `<strong>${s}</strong>No ${year} value in the census tables`;
+      const r = rankOf(s, year), c = prevChange(s, year);
+      return `<strong>${s}, ${year}</strong>${fmt$(v)} · ${fmtPct(v / US[year])} of US median<br>` +
+             `Rank ${r.rank} of ${r.of}` + (c != null ? ` · ${fmtChg(c)} since ${year - 10}` : '');
+    }
+
+    fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json')
+      .then(r => { if (!r.ok) throw new Error('GeoJSON ' + r.status); return r.json(); })
+      .then(gj => {
+        gj.features = gj.features.filter(f => V[f.properties.name]);
+        statesLayer = L.geoJSON(gj, {
+          style: f => baseStyle(f.properties.name),
+          onEachFeature: (f, layer) => {
+            const s = f.properties.name;
+            layer.bindTooltip(() => tipHtml(s), {sticky: true, className: 'hv-tip', direction: 'top', offset: [0, -8]});
+            layer.on({
+              mouseover: e => { if (s !== selected) e.target.setStyle({weight: 2, color: '#333'}); e.target.bringToFront(); bringSelectedFront(); },
+              mouseout: e => { statesLayer.resetStyle(e.target); },
+              click: () => selectState(s)
+            });
+          }
         }).addTo(map);
-        
-        // Variables for controlling the time-based animation
-        let currentYear = 2000;        // Starting year for visualization
-        let isPlaying = false;         // Animation state flag
-        let animationInterval;         // Stores the interval ID for animation
-        let selectedState = null;      // Currently selected state for detailed view
-        let stateGeoLayer;             // GeoJSON layer for states
-        
-        // Historical median home price data from Census Bureau (adjusted to 2000 dollars)
-        const censusMedianPriceData = {
-            1940: 30600, 1950: 44600, 1960: 58600, 1970: 65300, 1980: 93400, 1990: 101100, 2000: 119600
-        };
-        
-        // State abbreviations for data mapping
-        const stateAbbreviations = {
-            "Alabama": "AL", "Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR", "California": "CA",
-            "Colorado": "CO", "Connecticut": "CT", "Delaware": "DE", "Florida": "FL", "Georgia": "GA",
-            "Hawaii": "HI", "Idaho": "ID", "Illinois": "IL", "Indiana": "IN", "Iowa": "IA",
-            "Kansas": "KS", "Kentucky": "KY", "Louisiana": "LA", "Maine": "ME", "Maryland": "MD",
-            "Massachusetts": "MA", "Michigan": "MI", "Minnesota": "MN", "Mississippi": "MS", "Missouri": "MO",
-            "Montana": "MT", "Nebraska": "NE", "Nevada": "NV", "New Hampshire": "NH", "New Jersey": "NJ",
-            "New Mexico": "NM", "New York": "NY", "North Carolina": "NC", "North Dakota": "ND", "Ohio": "OH",
-            "Oklahoma": "OK", "Oregon": "OR", "Pennsylvania": "PA", "Rhode Island": "RI", "South Carolina": "SC",
-            "South Dakota": "SD", "Tennessee": "TN", "Texas": "TX", "Utah": "UT", "Vermont": "VT",
-            "Virginia": "VA", "Washington": "WA", "West Virginia": "WV", "Wisconsin": "WI", "Wyoming": "WY",
-            "District of Columbia": "DC"
-        };
-        
-        // Reverse mapping from abbreviation to full name
-        const stateFullNames = {};
-        for (const [fullName, abbr] of Object.entries(stateAbbreviations)) {
-            stateFullNames[abbr] = fullName;
-        }
-        
-        // Census data for state home values (adjusted to 2000 dollars)
-        const censusStateHomeValues = {
-            "Alabama": {1940: 16800, 1950: 27100, 1960: 42400, 1970: 46900, 1980: 67100, 1990: 68600, 2000: 85100},
-            "Alaska": {1940: null, 1950: 21100, 1960: 44800, 1970: 87200, 1980: 151000, 1990: 120600, 2000: 144200},
-            "Arizona": {1940: 14600, 1950: 36000, 1960: 54700, 1970: 62600, 1980: 108500, 1990: 102300, 2000: 121300},
-            "Arkansas": {1940: 11400, 1950: 24800, 1960: 33000, 1970: 40300, 1980: 61600, 1990: 59200, 2000: 72800},
-            "California": {1940: 36700, 1950: 57900, 1960: 74400, 1970: 88700, 1980: 167300, 1990: 249800, 2000: 211500},
-            "Colorado": {1940: 21800, 1950: 43300, 1960: 60600, 1970: 66400, 1980: 126900, 1990: 105700, 2000: 166600},
-            "Connecticut": {1940: 48000, 1950: 71900, 1960: 82300, 1970: 97900, 1980: 129900, 1990: 227200, 2000: 166900},
-            "Delaware": {1940: 43300, 1950: 55000, 1960: 61100, 1970: 65700, 1980: 87900, 1990: 127900, 2000: 130400},
-            "District of Columbia": {1940: 78800, 1950: 87800, 1960: 75900, 1970: 81800, 1980: 136200, 1990: 158300, 2000: 157200},
-            "Florida": {1940: 23100, 1950: 40100, 1960: 58100, 1970: 57600, 1980: 89300, 1990: 98500, 2000: 105500},
-            "Georgia": {1940: 20400, 1950: 31700, 1960: 46800, 1970: 56100, 1980: 73000, 1990: 91100, 2000: 111200},
-            "Hawaii": {1940: null, 1950: 74400, 1960: 103000, 1970: 134800, 1980: 233800, 1990: 313400, 2000: 272700},
-            "Idaho": {1940: 16700, 1950: 35500, 1960: 52200, 1970: 54200, 1980: 90300, 1990: 74400, 2000: 106300},
-            "Illinois": {1940: 34100, 1950: 52400, 1960: 72400, 1970: 76000, 1980: 104500, 1990: 103400, 2000: 130800},
-            "Indiana": {1940: 25000, 1950: 37700, 1960: 50300, 1970: 53000, 1980: 73600, 1990: 68900, 2000: 94300},
-            "Iowa": {1940: 23400, 1950: 38300, 1960: 48800, 1970: 53400, 1980: 80400, 1990: 58600, 2000: 82500},
-            "Kansas": {1940: 18000, 1950: 33100, 1960: 45800, 1970: 46500, 1980: 74800, 1990: 66700, 2000: 83500},
-            "Kentucky": {1940: 21600, 1950: 32000, 1960: 43400, 1970: 48400, 1980: 67700, 1990: 64500, 2000: 86700},
-            "Louisiana": {1940: 14700, 1950: 31100, 1960: 52700, 1970: 56100, 1980: 85100, 1990: 74700, 2000: 85000},
-            "Maine": {1940: 20900, 1950: 29400, 1960: 43400, 1970: 49200, 1980: 75000, 1990: 111700, 2000: 98700},
-            "Maryland": {1940: 31500, 1950: 48700, 1960: 58600, 1970: 71800, 1980: 115400, 1990: 148800, 2000: 146000},
-            "Massachusetts": {1940: 39900, 1950: 55400, 1960: 68000, 1970: 79100, 1980: 95800, 1990: 208000, 2000: 185700},
-            "Michigan": {1940: 29800, 1950: 45400, 1960: 59100, 1970: 67200, 1980: 77200, 1990: 77400, 2000: 115600},
-            "Minnesota": {1940: 31500, 1950: 47300, 1960: 63100, 1970: 69100, 1980: 105100, 1990: 94500, 2000: 122400},
-            "Mississippi": {1940: 12400, 1950: 25200, 1960: 38900, 1970: 43000, 1980: 62200, 1990: 58300, 2000: 71400},
-            "Missouri": {1940: 24900, 1950: 38800, 1960: 53700, 1970: 55300, 1980: 72600, 1990: 76400, 2000: 89900},
-            "Montana": {1940: 17200, 1950: 35100, 1960: 53700, 1970: 53800, 1980: 92000, 1990: 72300, 2000: 99500},
-            "Nebraska": {1940: 22400, 1950: 35900, 1960: 46300, 1970: 47600, 1980: 75200, 1990: 64400, 2000: 88000},
-            "Nevada": {1940: 20700, 1950: 53700, 1960: 74900, 1970: 86000, 1980: 136000, 1990: 122300, 2000: 142000},
-            "New Hampshire": {1940: 26100, 1950: 37600, 1960: 52700, 1970: 63000, 1980: 95000, 1990: 165300, 2000: 133300},
-            "New Jersey": {1940: 47100, 1950: 63100, 1960: 76900, 1970: 89900, 1980: 119200, 1990: 207400, 2000: 170800},
-            "New Mexico": {1940: 6800, 1950: 34500, 1960: 52700, 1970: 49900, 1980: 89700, 1990: 89600, 2000: 108100},
-            "New York": {1940: 45700, 1950: 61500, 1960: 75400, 1970: 86400, 1980: 90300, 1990: 168100, 2000: 148700},
-            "North Carolina": {1940: 18800, 1950: 29700, 1960: 39400, 1970: 49200, 1980: 71300, 1990: 84100, 2000: 108300},
-            "North Dakota": {1940: 16900, 1950: 32700, 1960: 48300, 1970: 49900, 1980: 86900, 1990: 64900, 2000: 74400},
-            "Ohio": {1940: 35500, 1950: 50300, 1960: 66000, 1970: 67600, 1980: 88900, 1990: 81100, 2000: 103700},
-            "Oklahoma": {1940: 13500, 1950: 31700, 1960: 38900, 1970: 42600, 1980: 70500, 1990: 61500, 2000: 70700},
-            "Oregon": {1940: 24400, 1950: 41500, 1960: 51700, 1970: 59100, 1980: 112600, 1990: 85700, 2000: 152100},
-            "Pennsylvania": {1940: 33400, 1950: 42400, 1960: 50300, 1970: 52200, 1980: 77400, 1990: 89100, 2000: 97000},
-            "Rhode Island": {1940: 40000, 1950: 59200, 1960: 60600, 1970: 69900, 1980: 92600, 1990: 170600, 2000: 133000},
-            "South Carolina": {1940: 22300, 1950: 31000, 1960: 37000, 1970: 49900, 1980: 69500, 1990: 78100, 2000: 94900},
-            "South Dakota": {1940: 16800, 1950: 32800, 1960: 43400, 1970: 43800, 1980: 72400, 1990: 57700, 2000: 79600},
-            "Tennessee": {1940: 19000, 1950: 31900, 1960: 40900, 1970: 48000, 1980: 70500, 1990: 74600, 2000: 93000},
-            "Texas": {1940: 17600, 1950: 35200, 1960: 43400, 1970: 46100, 1980: 77400, 1990: 76100, 2000: 82500},
-            "Utah": {1940: 24100, 1950: 44900, 1960: 62100, 1970: 64500, 1980: 113400, 1990: 88000, 2000: 146100},
-            "Vermont": {1940: 29500, 1950: 38000, 1960: 47800, 1970: 63000, 1980: 83500, 1990: 122000, 2000: 111500},
-            "Virginia": {1940: 27400, 1950: 39900, 1960: 53200, 1970: 65700, 1980: 95000, 1990: 116300, 2000: 125400},
-            "Washington": {1940: 24500, 1950: 43400, 1960: 57700, 1970: 71100, 1980: 118600, 1990: 119300, 2000: 168300},
-            "West Virginia": {1940: 24500, 1950: 33200, 1960: 37400, 1970: 43400, 1980: 76200, 1990: 61200, 2000: 72800},
-            "Wisconsin": {1940: 33600, 1950: 48000, 1960: 62100, 1970: 66400, 1980: 96200, 1990: 79900, 2000: 112200},
-            "Wyoming": {1940: 22600, 1950: 41300, 1960: 60600, 1970: 58800, 1980: 118400, 1990: 78700, 2000: 96600}
-        };
-        
-        /**
-         * Fetches housing price data for all states from Census data
-         * Returns a nested object with state names as keys and year-price mappings as values
-         */
-        async function fetchHousingData() {
-            const housingData = {};
-            
-            try {
-                console.log("Fetching state housing data...");
-                
-                // Initialize with Census data for all states
-                Object.keys(stateAbbreviations).forEach(state => {
-                    housingData[state] = censusStateHomeValues[state] || {};
-                });
-                
-                // Fetch US states GeoJSON data
-                const geoResponse = await fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json');
-                
-                if (!geoResponse.ok) {
-                    throw new Error('Failed to fetch US states GeoJSON');
-                }
-                
-                const statesGeoJson = await geoResponse.json();
-                
-                // Create the state layer with NYT-inspired styling
-                stateGeoLayer = L.geoJSON(statesGeoJson, {
-                    style: function(feature) {
-                        return {
-                            fillColor: '#f7f7f7',
-                            weight: 0.5,
-                            opacity: 1,
-                            color: '#aaa',
-                            fillOpacity: 0.7,
-                            dashArray: null
-                        };
-                    },
-                    onEachFeature: function(feature, layer) {
-                        // Add click event to show state details
-                        layer.on('click', function(e) {
-                            L.DomEvent.stopPropagation(e);
-                            
-                            // Hide the click hint when a state is clicked
-                            document.getElementById('click-hint').style.display = 'none';
-                            
-                            selectedState = feature.properties.name;
-                            
-                            const statePrice = housingData[selectedState][currentYear];
-                            const formattedPrice = new Intl.NumberFormat('en-US', {
-                                style: 'currency',
-                                currency: 'USD',
-                                maximumFractionDigits: 0
-                            }).format(statePrice);
-                            
-                            // Calculate decade change
-                            let changeInfo = '';
-                            const decadeMap = {2000: 1990, 1990: 1980, 1980: 1970, 1970: 1960, 1960: 1950, 1950: 1940};
-                            const prevDecade = decadeMap[currentYear];
-                            
-                            if (prevDecade && housingData[selectedState][prevDecade]) {
-                                const prevPrice = housingData[selectedState][prevDecade];
-                                const changePercent = ((statePrice - prevPrice) / prevPrice) * 100;
-                                const changeDirection = changePercent >= 0 ? 'increase' : 'decrease';
-                                changeInfo = `Decade Change: ${Math.abs(changePercent).toFixed(1)}% ${changeDirection}`;
-                            } else {
-                                changeInfo = 'No previous decade data available';
-                            }
-                            
-                            // Update info panel
-                            document.getElementById('state-name').textContent = selectedState;
-                            document.getElementById('price-info').textContent = `Median Home Price (${currentYear}): ${formattedPrice}`;
-                            document.getElementById('change-info').textContent = changeInfo;
-                            document.getElementById('state-info').style.display = 'block';
-                            
-                            // Update price history chart
-                            updatePriceHistoryChart(selectedState);
-                        });
-                    }
-                }).addTo(map);
-                
-                console.log("Successfully processed state housing data");
-                return housingData;
-                
-            } catch (error) {
-                console.error("Error fetching state housing data:", error);
-                console.log("Using Census data as fallback");
-                
-                // Use Census data as fallback
-                Object.keys(stateAbbreviations).forEach(state => {
-                    housingData[state] = censusStateHomeValues[state] || {};
-                });
-                
-                return housingData;
-            }
-        }
-        
-        /**
-         * Returns the national median home price for a given year
-         * Uses Census data
-         */
-        function calculateNationalMedian(year) {
-            return censusMedianPriceData[year];
-        }
-        
-        /**
-         * Determines color based on absolute price using a single-color gradient scheme
-         * Uses a blue gradient from light to dark for a consistent visual representation
-         */
-        function getColorForPrice(price) {
-            if (price >= 200000) return '#084594'; // $200,000+ (darkest blue)
-            if (price >= 150000) return '#2171b5'; // $150,000-$200,000
-            if (price >= 125000) return '#4292c6'; // $125,000-$150,000
-            if (price >= 100000) return '#6baed6'; // $100,000-$125,000
-            if (price >= 75000) return '#9ecae1';  // $75,000-$100,000
-            if (price >= 50000) return '#c6dbef';  // $50,000-$75,000
-            if (price >= 25000) return '#deebf7';  // $25,000-$50,000
-            if (price >= 10000) return '#f7fbff';  // $10,000-$25,000
-            return '#ffffff';                      // Under $10,000 (lightest/white)
-        }
-        
-        /**
-         * Updates the map visualization for a specific year
-         * Refreshes all state colors, updates UI elements and recalculates prices
-         */
-        function updateMap(year) {
-            document.getElementById('year-display').textContent = year;
-            document.getElementById('year-slider').value = year;
-            
-            // Calculate and update the national median price
-            const nationalMedian = calculateNationalMedian(year);
-            const formattedMedian = new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-                maximumFractionDigits: 0
-            }).format(nationalMedian);
-            
-            document.getElementById('median-price-display').textContent = `National Median (${year}): ${formattedMedian}`;
-            
-            // Update state colors based on current year data
-            if (stateGeoLayer) {
-                stateGeoLayer.eachLayer(function(layer) {
-                    const stateName = layer.feature.properties.name;
-                    const currentPrice = housingData[stateName] ? housingData[stateName][year] : null;
-                    
-                    if (currentPrice) {
-                        // Set fill color based on absolute price
-                        const fillColor = getColorForPrice(currentPrice);
-                        
-                        layer.setStyle({
-                            fillColor: fillColor,
-                            weight: 0.5,
-                            opacity: 1,
-                            color: '#aaa',
-                            fillOpacity: 0.7,
-                            dashArray: null
-                        });
-                        
-                        // Format price for display in popup
-                        const formattedPrice = new Intl.NumberFormat('en-US', {
-                            style: 'currency',
-                            currency: 'USD',
-                            maximumFractionDigits: 0
-                        }).format(currentPrice);
-                        
-                        // Create popup content with state name and price information
-                        let popupContent = `<b>${stateName}</b><br>Median Home Price (${year}): ${formattedPrice}`;
-                        
-                        // Add decade change information if available
-                        const decadeMap = {2000: 1990, 1990: 1980, 1980: 1970, 1970: 1960, 1960: 1950, 1950: 1940};
-                        const prevDecade = decadeMap[year];
-                        
-                        if (prevDecade && housingData[stateName][prevDecade]) {
-                            const prevPrice = housingData[stateName][prevDecade];
-                            const changePercent = ((currentPrice - prevPrice) / prevPrice) * 100;
-                            const changeDirection = changePercent >= 0 ? 'increase' : 'decrease';
-                            popupContent += `<br>Decade Change: ${Math.abs(changePercent).toFixed(1)}% ${changeDirection}`;
-                        }
-                        
-                        layer.bindPopup(popupContent);
-                    }
-                });
-            }
-            
-            // Update chart if a state is selected, or default to California
-            if (selectedState) {
-                updatePriceHistoryChart(selectedState);
-                
-                // Update the state info panel with current year data
-                if (document.getElementById('state-info').style.display !== 'none') {
-                    const statePrice = housingData[selectedState][year];
-                    const formattedPrice = new Intl.NumberFormat('en-US', {
-                        style: 'currency',
-                        currency: 'USD',
-                        maximumFractionDigits: 0
-                    }).format(statePrice);
-                    
-                    // Calculate decade change for the selected state
-                    let changeInfo = '';
-                    const decadeMap = {2000: 1990, 1990: 1980, 1980: 1970, 1970: 1960, 1960: 1950, 1950: 1940};
-                    const prevDecade = decadeMap[year];
-                    
-                    if (prevDecade && housingData[selectedState][prevDecade]) {
-                        const prevPrice = housingData[selectedState][prevDecade];
-                        const changePercent = ((statePrice - prevPrice) / prevPrice) * 100;
-                        const changeDirection = changePercent >= 0 ? 'increase' : 'decrease';
-                        changeInfo = `Decade Change: ${Math.abs(changePercent).toFixed(1)}% ${changeDirection}`;
-                    } else {
-                        changeInfo = 'No previous decade data available';
-                    }
-                    
-                    document.getElementById('price-info').textContent = `Median Home Price (${year}): ${formattedPrice}`;
-                    document.getElementById('change-info').textContent = changeInfo;
-                }
-            } else if (!selectedState && !document.getElementById('state-info').style.display) {
-                // Set California as the default state if no state is selected
-                selectedState = "California";
-                updatePriceHistoryChart(selectedState);
-                document.getElementById('state-info').style.display = 'block';
-                document.getElementById('state-name').textContent = selectedState;
-                
-                // Update the state info panel with current year data
-                const statePrice = housingData[selectedState][year];
-                const formattedPrice = new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'USD',
-                    maximumFractionDigits: 0
-                }).format(statePrice);
-                
-                // Calculate decade change for California
-                let changeInfo = '';
-                const decadeMap = {2000: 1990, 1990: 1980, 1980: 1970, 1970: 1960, 1960: 1950, 1950: 1940};
-                const prevDecade = decadeMap[year];
-                
-                if (prevDecade && housingData[selectedState][prevDecade]) {
-                    const prevPrice = housingData[selectedState][prevDecade];
-                    const changePercent = ((statePrice - prevPrice) / prevPrice) * 100;
-                    const changeDirection = changePercent >= 0 ? 'increase' : 'decrease';
-                    changeInfo = `Decade Change: ${Math.abs(changePercent).toFixed(1)}% ${changeDirection}`;
-                } else {
-                    changeInfo = 'No previous decade data available';
-                }
-                
-                document.getElementById('price-info').textContent = `Median Home Price (${year}): ${formattedPrice}`;
-                document.getElementById('change-info').textContent = changeInfo;
-            }
-        }
-        
-        /**
-         * Creates or updates the D3.js price history chart for a selected state
-         * Shows state prices compared to national median over time
-         */
-        function updatePriceHistoryChart(stateName) {
-            const chartContainer = document.getElementById('price-history-chart');
-            chartContainer.innerHTML = '';
-            
-            // Set up dimensions and margins for the chart
-            const margin = {top: 30, right: 30, bottom: 50, left: 80};
-            const width = chartContainer.clientWidth - margin.left - margin.right;
-            const height = chartContainer.clientHeight - margin.top - margin.bottom;
-            
-            // Create SVG container for the chart
-            const svg = d3.select('#price-history-chart')
-                .append('svg')
-                .attr('width', width + margin.left + margin.right)
-                .attr('height', height + margin.top + margin.bottom)
-                .append('g')
-                .attr('transform', `translate(${margin.left},${margin.top})`);
-            
-            // Prepare data for state prices over time
-            const stateData = [];
-            const years = [1940, 1950, 1960, 1970, 1980, 1990, 2000];
-            
-            for (const year of years) {
-                if (housingData[stateName] && housingData[stateName][year]) {
-                    stateData.push({
-                        year: year,
-                        price: housingData[stateName][year]
-                    });
-                }
-            }
-            
-            // Prepare national data for comparison
-            const nationalData = [];
-            for (const year of years) {
-                if (censusMedianPriceData[year]) {
-                    nationalData.push({
-                        year: year,
-                        price: censusMedianPriceData[year]
-                    });
-                }
-            }
-            
-            // Create X scale (linear scale for years)
-            const x = d3.scaleLinear()
-                .domain([1940, 2000])
-                .range([0, width]);
-            
-            // Create Y scale (linear scale for prices)
-            // Use max of either state or national data to set upper bound
-            const maxPrice = Math.max(
-                d3.max(stateData, d => d.price),
-                d3.max(nationalData, d => d.price)
-            );
-            
-            const y = d3.scaleLinear()
-                .domain([0, maxPrice * 1.1]) // Add 10% padding at top
-                .range([height, 0]);
-            
-            // Add X axis with year labels
-            svg.append('g')
-                .attr('transform', `translate(0,${height})`)
-                .call(d3.axisBottom(x).tickFormat(d3.format('d')).tickValues(years))
-                .style('color', '#666');
-            
-            // Add Y axis with dollar formatting
-            svg.append('g')
-                .call(d3.axisLeft(y).tickFormat(d => `$${d3.format(',.0f')(d)}`))
-                .style('color', '#666');
-            
-            // Add X axis label
-            svg.append('text')
-                .attr('x', width / 2)
-                .attr('y', height + margin.bottom - 10)  // Increased space to avoid overlap
-                .style('text-anchor', 'middle')
-                .style('fill', '#333')
-                .style('font-size', '12px')
-                .style('dominant-baseline', 'hanging')  // Ensures text hangs from the position
-                .text('Census Year');
-            
-            // Add Y axis label
-            svg.append('text')
-                .attr('transform', 'rotate(-90)')
-                .attr('y', -margin.left + 10)  // Moved closer to the left edge
-                .attr('x', -height / 2)
-                .attr('dy', '0.75em')          // Reduced vertical offset
-                .style('text-anchor', 'middle')
-                .style('fill', '#333')
-                .style('font-size', '12px')    // Added explicit font size
-                .text('Median Home Price (2000 Dollars)');
-            
-            // Add chart title
-            svg.append('text')
-                .attr('x', width / 2)
-                .attr('y', -10)
-                .attr('text-anchor', 'middle')
-                .style('font-size', '16px')
-                .style('fill', '#333')
-                .text(`${stateName} vs. National Housing Price History (1940-2000)`);
-            
-            // Create tooltip for hover information
-            const tooltip = d3.select('body')
-                .append('div')
-                .attr('class', 'tooltip')
-                .style('opacity', 0);
-            
-            // Add the national price line (dashed style)
-            svg.append('path')
-                .datum(nationalData)
-                .attr('fill', 'none')
-                .attr('stroke', '#666')
-                .attr('stroke-width', 2)
-                .attr('stroke-dasharray', '5,5')
-                .attr('d', d3.line()
-                    .x(d => x(d.year))
-                    .y(d => y(d.price))
-                );
-            
-            // Add the state price line (solid style)
-            svg.append('path')
-                .datum(stateData)
-                .attr('fill', 'none')
-                .attr('stroke', '#084594')
-                .attr('stroke-width', 2)
-                .attr('d', d3.line()
-                    .x(d => x(d.year))
-                    .y(d => y(d.price))
-                );
-            
-            // Add legend items to identify lines - positioned in bottom right to avoid navbar overlap
-            svg.append('circle').attr('cx', width - 150).attr('cy', height - 30).attr('r', 6).style('fill', '#084594');
-            svg.append('text').attr('x', width - 130).attr('y', height - 30).text(stateName).style('font-size', '12px').attr('alignment-baseline', 'middle');
-            svg.append('line').attr('x1', width - 150).attr('y1', height - 10).attr('x2', width - 130).attr('y2', height - 10).style('stroke', '#666').style('stroke-dasharray', '5,5');
-            svg.append('text').attr('x', width - 120).attr('y', height - 10).text('National').style('font-size', '12px').attr('alignment-baseline', 'middle');
-            // Find data point for current year (or closest available year)
-            let currentYearStateData;
-            if (currentYear <= 1940) {
-                currentYearStateData = stateData.find(d => d.year === 1940) || stateData[0];
-            } else if (currentYear >= 2000) {
-                currentYearStateData = stateData.find(d => d.year === 2000) || stateData[stateData.length - 1];
-            } else {
-                // Find the closest year in our dataset
-                const availableYears = stateData.map(d => d.year);
-                const closestYear = availableYears.reduce((prev, curr) => 
-                    Math.abs(curr - currentYear) < Math.abs(prev - currentYear) ? curr : prev
-                );
-                currentYearStateData = stateData.find(d => d.year === closestYear);
-            }
-            
-            // Add marker for the current/closest year on the state line
-            if (currentYearStateData) {
-                svg.append('circle')
-                    .attr('cx', x(currentYearStateData.year))
-                    .attr('cy', y(currentYearStateData.price))
-                    .attr('r', 6)
-                    .attr('fill', '#ff9800')
-                    .attr('stroke', '#fff')
-                    .attr('stroke-width', 2);
-            }
-            
-            // Add interactive dots for each year with hover effects
-            svg.selectAll('.state-dot')
-                .data(stateData)
-                .enter()
-                .append('circle')
-                .attr('class', 'state-dot')
-                .attr('cx', d => x(d.year))
-                .attr('cy', d => y(d.price))
-                .attr('r', 3)
-                .attr('fill', '#2c3e50')
-                .attr('opacity', 0.5)
-                .on('mouseover', function(event, d) {
-                    // Enlarge dot on hover
-                    d3.select(this)
-                        .attr('r', 5)
-                        .attr('opacity', 1);
-                    
-                    // Show tooltip with price information
-                    tooltip.transition()
-                        .duration(200)
-                        .style('opacity', .9);
-                    
-                    // Format price for display
-                    const formattedPrice = new Intl.NumberFormat('en-US', {
-                        style: 'currency',
-                        currency: 'USD',
-                        maximumFractionDigits: 0
-                    }).format(d.price);
-                    
-                    // Calculate decade change if not 1940
-                    let changeText = '';
-                    if (d.year > 1940) {
-                        const prevDecade = d.year - 10;
-                        if (housingData[stateName][prevDecade]) {
-                            const prevPrice = housingData[stateName][prevDecade];
-                            const changePercent = ((d.price - prevPrice) / prevPrice) * 100;
-                            const changeDirection = changePercent >= 0 ? 'increase' : 'decrease';
-                            changeText = `<br>Decade Change: ${Math.abs(changePercent).toFixed(1)}% ${changeDirection}`;
-                        }
-                    }
-                    
-                    // Set tooltip content and position
-                    tooltip.html(`<strong>${stateName} (${d.year})</strong><br>${formattedPrice}${changeText}`)
-                        .style('left', (event.pageX + 10) + 'px')
-                        .style('top', (event.pageY - 28) + 'px');
-                })
-                .on('mouseout', function() {
-                    // Restore original dot size on mouseout
-                    d3.select(this)
-                        .attr('r', 3)
-                        .attr('opacity', 0.5);
-                    
-                    // Hide tooltip
-                    tooltip.transition()
-                        .duration(500)
-                        .style('opacity', 0);
-                });
-                
-            // Add national median dots for comparison
-            svg.selectAll('.national-dot')
-                .data(nationalData)
-                .enter()
-                .append('circle')
-                .attr('class', 'national-dot')
-                .attr('cx', d => x(d.year))
-                .attr('cy', d => y(d.price))
-                .attr('r', 3)
-                .attr('fill', '#666')
-                .attr('opacity', 0.5)
-                .on('mouseover', function(event, d) {
-                    // Enlarge dot on hover
-                    d3.select(this)
-                        .attr('r', 5)
-                        .attr('opacity', 1);
-                    
-                    // Show tooltip with price information
-                    tooltip.transition()
-                        .duration(200)
-                        .style('opacity', .9);
-                    
-                    // Format price for display
-                    const formattedPrice = new Intl.NumberFormat('en-US', {
-                        style: 'currency',
-                        currency: 'USD',
-                        maximumFractionDigits: 0
-                    }).format(d.price);
-                    
-                    // Calculate decade change if not 1940
-                    let changeText = '';
-                    if (d.year > 1940) {
-                        const prevDecade = d.year - 10;
-                        if (censusMedianPriceData[prevDecade]) {
-                            const prevPrice = censusMedianPriceData[prevDecade];
-                            const changePercent = ((d.price - prevPrice) / prevPrice) * 100;
-                            const changeDirection = changePercent >= 0 ? 'increase' : 'decrease';
-                            changeText = `<br>Decade Change: ${Math.abs(changePercent).toFixed(1)}% ${changeDirection}`;
-                        }
-                    }
-                    
-                    // Set tooltip content and position
-                    tooltip.html(`<strong>National Median (${d.year})</strong><br>${formattedPrice}${changeText}`)
-                        .style('left', (event.pageX + 10) + 'px')
-                        .style('top', (event.pageY - 28) + 'px');
-                })
-                .on('mouseout', function() {
-                    // Restore original dot size on mouseout
-                    d3.select(this)
-                        .attr('r', 3)
-                        .attr('opacity', 0.5);
-                    
-                    // Hide tooltip
-                    tooltip.transition()
-                        .duration(500)
-                        .style('opacity', 0);
-                });
-        }
-        
-        // Initialize the application
-        let housingData;
-        /**
-         * Main initialization function that sets up the application
-         * Fetches data, initializes map and sets up event listeners
-         */
-        async function initializeApp() {
-            // Fetch housing data
-            housingData = await fetchHousingData();
-            
-            // Initialize with the first last year
-            updateMap(2000);
-            
-            // Set up event listener for year slider
-            document.getElementById('year-slider').addEventListener('input', function() {
-                currentYear = parseInt(this.value);
-                updateMap(currentYear);
-                
-                // If animation is playing, stop it
-                if (isPlaying) {
-                    clearInterval(animationInterval);
-                    document.getElementById('play-button').textContent = 'Play';
-                    isPlaying = false;
-                }
-            });
-            
-            // Set up event listener for play/pause button
-            document.getElementById('play-button').addEventListener('click', function() {
-                if (isPlaying) {
-                    // Pause the animation
-                    clearInterval(animationInterval);
-                    this.textContent = 'Play';
-                    isPlaying = false;
-                } else {
-                    // Start the animation
-                    this.textContent = 'Pause';
-                    isPlaying = true;
-                    
-                    animationInterval = setInterval(() => {
-                        if (currentYear < 2000) {
-                            currentYear += 10; // Move by decades
-                            if (currentYear > 2000) currentYear = 2000;
-                        } else {
-                            currentYear = 1940; // Loop back to start
-                        }
-                        updateMap(currentYear);
-                    }, 1000); // Change every second
-                }
-            });
-            
-            // Close info panel when clicking elsewhere on the map
-            map.on('click', function(e) {
-                if (!e.originalEvent.defaultPrevented) {
-                    document.getElementById('state-info').style.display = 'none';
-                    selectedState = null;
-                    document.getElementById('price-history-chart').innerHTML = '';
-                }
-            });
-            
-            // Handle window resize
-            window.addEventListener('resize', function() {
-                if (selectedState) {
-                    updatePriceHistoryChart(selectedState);
-                }
-            });
-        }
-        
-        // Start the application
-        initializeApp();
-    </script>
+        bringSelectedFront();
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('map').insertAdjacentHTML('beforeend',
+          '<p style="position:absolute;inset:auto 0 45% 0;text-align:center;z-index:700">State boundaries could not be loaded. The table under About the data lists every value.</p>');
+      });
+
+    function bringSelectedFront() {
+      if (!statesLayer) return;
+      statesLayer.eachLayer(l => { if (l.feature.properties.name === selected) l.bringToFront(); });
+    }
+    function restyle() {
+      if (!statesLayer) return;
+      statesLayer.eachLayer(l => l.setStyle(baseStyle(l.feature.properties.name)));
+      bringSelectedFront();
+    }
+
+    /* ---------------- Legend ---------------- */
+    function renderLegend() {
+      const cls = classes();
+      const counts = cls.map(() => 0);
+      let missing = 0;
+      STATES.forEach(s => {
+        const m = metric(s, year);
+        if (m == null) { missing++; return; }
+        counts[cls.indexOf(classOf(m))]++;
+      });
+      const title = mode === 'value' ? 'Median home value' : 'Share of US median value';
+      const unit = mode === 'value' ? 'Constant 2000 dollars · same scale every decade' : `100% = US median for ${year}`;
+      // Highest class first so the legend reads top-down like the ramp.
+      const rows = cls.map((c, i) => ({c, n: counts[i]})).reverse().map(({c, n}) =>
+        `<div class="hv-legend-row"><span class="sw" style="background:${c.color}"></span><span>${c.label}</span><span class="n">${n}</span></div>`).join('');
+      const nd = missing ? `<div class="hv-legend-row nodata"><span class="sw"></span><span>No data</span><span class="n">${missing}</span></div>` : '';
+      document.getElementById('legend').innerHTML =
+        `<h3>${title}, ${year}</h3><p class="unit">${unit}</p>${rows}${nd}` +
+        `<div class="us">US median: ${fmt$(US[year])}</div>` +
+        `<div class="unit" style="margin:0.2rem 0 0">Numbers = states in class</div>`;
+    }
+
+    /* ---------------- State card ---------------- */
+    function renderCard() {
+      const s = selected, v = val(s, year), el = document.getElementById('state-card');
+      if (v == null) {
+        el.innerHTML = `<h3>${s}</h3><p class="hint">No ${year} value: ${s} was a territory and not part of the ${year} state tables.</p>`;
+        return;
+      }
+      const r = rankOf(s, year), c = prevChange(s, year);
+      const first = YEARS.find(y => val(s, y) != null);
+      const total = first < year ? (v - val(s, first)) / val(s, first) : null;
+      const ratio = v / US[year];
+      const cls = x => (x >= 0 ? 'up' : 'down');
+      el.innerHTML = `
+        <h3>${s}</h3>
+        <p class="hint">Census ${year} · select another state on the map</p>
+        <dl>
+          <div class="big">${fmt$(v)}</div>
+          <dt>Share of US median</dt><dd class="${ratio >= 1 ? 'up' : 'down'}">${fmtPct(ratio)}</dd>
+          <dt>Rank (1 = highest)</dt><dd>${r.rank} of ${r.of}</dd>
+          <dt>Change since ${year - 10}</dt><dd class="${c != null ? cls(c) : ''}">${c != null ? fmtChg(c) : '—'}</dd>
+          <dt>Change since ${first}</dt><dd class="${total != null ? cls(total) : ''}">${total != null ? fmtChg(total) : '—'}</dd>
+        </dl>`;
+    }
+
+    /* ---------------- Chart ---------------- */
+    function renderChart() {
+      const box = document.getElementById('price-history-chart');
+      box.innerHTML = '';
+      const W = Math.max(box.clientWidth - 16, 300), H = 300;
+      const narrow = W < 560;
+      const m = {top: narrow ? 52 : 34, right: 24, bottom: 34, left: 58};
+      const w = W - m.left - m.right, h = H - m.top - m.bottom;
+      const sData = YEARS.map(y => ({y, v: val(selected, y)})).filter(d => d.v != null);
+      const uData = YEARS.map(y => ({y, v: US[y]}));
+      const maxV = d3.max([...sData, ...uData], d => d.v);
+
+      const svg = d3.select(box).append('svg').attr('viewBox', `0 0 ${W} ${H}`)
+        .attr('role', 'img').attr('aria-label', `${selected} median home value compared with the US median, 1940 to 2000`);
+      const g = svg.append('g').attr('transform', `translate(${m.left},${m.top})`);
+      const x = d3.scaleLinear().domain([1940, 2000]).range([0, w]);
+      const y = d3.scaleLinear().domain([0, maxV * 1.08]).nice().range([h, 0]);
+
+      g.append('g').attr('class', 'grid').call(d3.axisLeft(y).ticks(5).tickSize(-w).tickFormat(''))
+        .call(a => a.selectAll('line').attr('stroke', '#ebe7dc')).call(a => a.select('.domain').remove());
+      g.append('g').attr('transform', `translate(0,${h})`).call(d3.axisBottom(x).tickValues(YEARS).tickFormat(d3.format('d')))
+        .call(a => a.selectAll('text').style('font-size', '11px'));
+      g.append('g').call(d3.axisLeft(y).ticks(5).tickFormat(fmtK)).call(a => a.select('.domain').remove())
+        .call(a => a.selectAll('text').style('font-size', '11px'));
+
+      g.append('line').attr('x1', x(year)).attr('x2', x(year)).attr('y1', 0).attr('y2', h)
+        .attr('stroke', '#111').attr('stroke-dasharray', '2,3');
+
+      const line = d3.line().x(d => x(d.y)).y(d => y(d.v));
+      g.append('path').datum(uData).attr('fill', 'none').attr('stroke', '#777').attr('stroke-width', 2).attr('stroke-dasharray', '6,4').attr('d', line);
+      g.append('path').datum(sData).attr('fill', 'none').attr('stroke', '#c8261a').attr('stroke-width', 3).attr('d', line);
+
+      svg.append('text').attr('x', m.left).attr('y', 16).style('font-size', '13px').style('font-weight', 600)
+        .text(`${selected} vs. US median · constant 2000 dollars`);
+      const lg = svg.append('g').attr('transform', narrow ? `translate(${m.left},34)` : `translate(${W - m.right - 190},12)`);
+      lg.append('line').attr('x1', 0).attr('x2', 22).attr('y1', 0).attr('y2', 0).attr('stroke', '#c8261a').attr('stroke-width', 3);
+      lg.append('text').attr('x', 28).attr('y', 4).style('font-size', '11px').text(selected.length > 12 ? selected.slice(0, 12) + '…' : selected);
+      lg.append('line').attr('x1', 110).attr('x2', 132).attr('y1', 0).attr('y2', 0).attr('stroke', '#777').attr('stroke-width', 2).attr('stroke-dasharray', '6,4');
+      lg.append('text').attr('x', 138).attr('y', 4).style('font-size', '11px').text('US');
+
+      const tip = d3.select(box).append('div').attr('class', 'hv-chart-tip');
+      const show = (ev, label, d, series) => {
+        const i = YEARS.indexOf(d.y), p = i > 0 ? series[i - 1] : null;
+        const chg = p && p.v ? ` · ${fmtChg((d.v - p.v) / p.v)} vs ${p.y}` : '';
+        const [px, py] = d3.pointer(ev, box);
+        tip.html(`<strong>${label} ${d.y}</strong><br>${fmt$(d.v)}${chg}`)
+          .style('left', Math.min(px + 12, box.clientWidth - 170) + 'px').style('top', (py - 40) + 'px').style('opacity', 1);
+      };
+      const sFull = YEARS.map(y => ({y, v: val(selected, y)}));
+      g.selectAll('.u').data(uData).enter().append('circle').attr('cx', d => x(d.y)).attr('cy', d => y(d.v))
+        .attr('r', 4).attr('fill', '#fff').attr('stroke', '#777').attr('stroke-width', 2)
+        .on('mousemove', (ev, d) => show(ev, 'US', d, uData)).on('mouseleave', () => tip.style('opacity', 0));
+      g.selectAll('.s').data(sData).enter().append('circle').attr('cx', d => x(d.y)).attr('cy', d => y(d.v))
+        .attr('r', d => (d.y === year ? 7 : 4.5)).attr('fill', d => (d.y === year ? '#c8261a' : '#fff'))
+        .attr('stroke', '#c8261a').attr('stroke-width', 2.5)
+        .on('mousemove', (ev, d) => show(ev, selected, d, sFull)).on('mouseleave', () => tip.style('opacity', 0));
+    }
+
+    /* ---------------- Table ---------------- */
+    function renderTable() {
+      document.getElementById('table-year').textContent = year;
+      const rows = STATES.filter(s => val(s, year) != null).sort((a, b) => val(b, year) - val(a, year));
+      document.querySelector('#data-table tbody').innerHTML = rows.map((s, i) => {
+        const v = val(s, year), c = prevChange(s, year);
+        return `<tr><td>${i + 1}</td><td style="text-align:left">${s}</td><td>${fmt$(v)}</td><td>${fmtPct(v / US[year])}</td><td>${c != null ? fmtChg(c) : '—'}</td></tr>`;
+      }).join('');
+      const uc = year > 1940 ? (US[year] - US[year - 10]) / US[year - 10] : null;
+      document.querySelector('#data-table tfoot').innerHTML =
+        `<tr><td></td><td style="text-align:left">United States</td><td>${fmt$(US[year])}</td><td>100%</td><td>${uc != null ? fmtChg(uc) : '—'}</td></tr>`;
+    }
+
+    /* ---------------- Update loop ---------------- */
+    function update() {
+      document.getElementById('year-slider').value = year;
+      document.getElementById('year-slider').setAttribute('aria-valuetext', String(year));
+      document.getElementById('map-year').textContent = year;
+      document.getElementById('map-sub').textContent = mode === 'value'
+        ? 'Median home value, constant 2000 dollars'
+        : 'Median home value as a share of the US median';
+      restyle(); renderLegend(); renderCard(); renderChart(); renderTable();
+    }
+    function selectState(s) { selected = s; update(); }
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('mode-value').setAttribute('aria-pressed', m === 'value');
+      document.getElementById('mode-ratio').setAttribute('aria-pressed', m === 'ratio');
+      update();
+    }
+    document.getElementById('mode-value').addEventListener('click', () => setMode('value'));
+    document.getElementById('mode-ratio').addEventListener('click', () => setMode('ratio'));
+
+    function stop() { clearInterval(timer); playing = false; document.getElementById('play-button').textContent = 'Play'; }
+    document.getElementById('year-slider').addEventListener('input', e => { stop(); year = +e.target.value; update(); });
+    document.getElementById('play-button').addEventListener('click', function () {
+      if (playing) return stop();
+      playing = true; this.textContent = 'Pause';
+      if (year === 2000) { year = 1940; update(); }
+      timer = setInterval(() => {
+        if (year >= 2000) return stop();
+        year += 10; update();
+      }, 1200);
+    });
+
+    let rt;
+    let lastW = 0;
+    const refit = () => {
+      map.invalidateSize();
+      const w = map.getSize().x;
+      // Refits only when the width changes, so mobile scrolling does not reset a zoomed view.
+      if (w !== lastW) { lastW = w; fitLower48(); }
+    };
+    window.addEventListener('load', refit);
+    window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { refit(); renderChart(); }, 150); });
+
+    update();
+    refit();
+  })();
+  </script>
 </body>
 </html>
