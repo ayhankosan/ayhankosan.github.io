@@ -19,6 +19,10 @@
     .ee-embed-load { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 0 4px rgba(255,255,255,0.85); }
     .ee-embed-alt { font-size: 0.9rem; }
     @media (max-width: 640px) { .ee-embed { aspect-ratio: 3 / 4; } }
+    .data-notes { display: grid; grid-template-columns: 190px 1fr; gap: 0.6rem 1.25rem; max-width: 860px; margin-top: 0.75rem; }
+    .data-notes dt { font-weight: 600; }
+    .data-notes dd { margin: 0; }
+    @media (max-width: 760px) { .data-notes { grid-template-columns: 1fr; gap: 0.2rem; } .data-notes dd { margin-bottom: 0.6rem; } }
   </style>
 </head>
 <body id="top">
@@ -85,6 +89,28 @@
           <button type="button" class="btn btn-primary ee-embed-load" id="ee-embed-load">Load interactive map</button>
         </div>
         <p class="ee-embed-alt"><a href="https://ayhanxkosan.users.earthengine.app/view/californiareservoiranalysis" target="_blank" rel="noopener">Open the map full screen<span class="visually-hidden"> (opens in a new tab)</span></a></p>
+
+        <h2>About the data</h2>
+        <dl class="data-notes">
+          <dt>What GRACE measures</dt>
+          <dd>The GRACE (2002–2017) and GRACE-FO (since 2018) satellite pairs measure small month-to-month changes in Earth's gravity. Over land, most of that change comes from water gaining or losing mass, so the gravity record can be converted into a change in total water storage: snow, soil moisture, surface water and groundwater combined.</dd>
+          <dt>Units</dt>
+          <dd>Storage is given in centimeters of equivalent water thickness: the depth of water the change would make if spread evenly over the basins. Over the Central Valley basins (about 155,000 km²), 1 cm equals about 1.55 km³ of water, or roughly 1.26 million acre-feet.</dd>
+          <dt>Anomalies</dt>
+          <dd>Every value is an anomaly, the difference from the basin's 2004–2009 average. Negative values mean less water than in that reference period, not a negative amount of water.</dd>
+          <dt>Groundwater estimate</dt>
+          <dd>Groundwater is not measured directly. It is what remains after soil moisture and snow, both from the FLDAS Noah land-surface model, are subtracted from GRACE total storage. The monthly series still includes reservoirs and lakes, so it is labeled groundwater plus surface water; for 2003–2016, reservoir storage from California's CDEC gauges is also removed.</dd>
+          <dt>Trends</dt>
+          <dd>Trends come from a fit that separates the long-term change from the yearly wet–dry cycle. Over 2002–2024 total storage fell by about 1.9 km³ per year (± 0.5), and groundwater plus surface water by about 1.8 km³ per year (± 0.3), roughly 1.5 million acre-feet per year. The ± values are one standard error, widened to account for consecutive months being correlated.</dd>
+          <dt>Water years</dt>
+          <dd>California's water year runs from October to September, so a winter's rain and snow fall into one water year. Storage change per water year compares the end of the summer (August–September) with the same months a year earlier, set against PRISM precipitation for the basins.</dd>
+          <dt>Resolution</dt>
+          <dd>GRACE resolves regions of roughly 300 km. The maps use a 0.5° grid, but that grid does not add detail: the maps show regional patterns, and the basin totals are the reliable figures. Some of the basin signal also comes from neighboring areas, mainly the Sierra Nevada snowpack.</dd>
+          <dt>Gaps and uncertainty</dt>
+          <dd>Some months have no GRACE solution, most notably the year between the end of GRACE in 2017 and the start of GRACE-FO in 2018; charts show these as gaps. The shaded band on the monthly chart is NASA JPL's own uncertainty estimate, which JPL describes as conservative. The groundwater estimate also carries the land-surface model's error, which is not included in the ± values.</dd>
+          <dt>Sources</dt>
+          <dd>NASA JPL GRACE and GRACE-FO mascons, release RL06.3 v04 (<a href="https://doi.org/10.5067/TEMSC-3JC634">Wiese et al. 2023</a>); FLDAS Noah land-surface model (McNally et al. 2017); PRISM Climate Group precipitation; USGS Watershed Boundary Dataset; reservoir storage table from <em>Cloud-Based Remote Sensing with Google Earth Engine</em>, chapter A2.1 (Purdy and Famiglietti). Method after Famiglietti et al. (2011), <em>Geophysical Research Letters</em> 38.</dd>
+        </dl>
 
       </div>
     </div>
